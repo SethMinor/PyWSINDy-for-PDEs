@@ -5,7 +5,7 @@
 [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-310/)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SethMinor/WSINDy-for-Python/blob/main/Weak_SINDy_example.ipynb)
 ---
-![WSINDy_header2](https://github.com/SethMinor/WSINDy-for-Python/assets/97004318/965ac9bf-560e-486c-a36c-fca094fc391d)
+![wsindy_github_pic](https://github.com/SethMinor/WSINDy-for-Python/assets/97004318/8e567430-7368-420c-bf94-6eee224f7dc5)
 ## Files Included
 `Weak_SINDy_example.ipynb` is a Jupyter notebook containing a step-by-step example of WSINDy identifying the $(1+1)$-dimensional Kuramoto-Sivashinksy equation from data.
 
