@@ -7,9 +7,9 @@
 ---
 ![WSINDy_header2](https://github.com/SethMinor/WSINDy-for-Python/assets/97004318/965ac9bf-560e-486c-a36c-fca094fc391d)
 ## Files Included
-`Weak_SINDy_example.ipynb` is a Jupyter notebook with a step-by-step illustration of WSINDy identifying the $(1+1)$-dimensional Kuramoto-Sivashinksy equation from data.
+`Weak_SINDy_example.ipynb` is a Jupyter notebook containing a step-by-step example of WSINDy identifying the $(1+1)$-dimensional Kuramoto-Sivashinksy equation from data.
 
-To access a dataset stored in Google Drive while using Google Colab (e.g., in `/content/drive/My Drive/WSINDy/dataset_name.txt`), use the following commands to change directories.
+###### To access a dataset stored in Google Drive while using Google Colab (e.g., in `/content/drive/My Drive/WSINDy/dataset_name.txt`), use the following commands to change directories.
 ```python
 !mkdir -p "/content/drive/My Drive/WSINDy"
 
