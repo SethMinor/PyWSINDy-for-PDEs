@@ -42,7 +42,6 @@ writematrix(u_storage,'SH23_1');
 
 %% Save a video
 
-% Save the video
 v = VideoWriter('sh23_simulation.avi');
 v.Quality = 85;
 open(v)
@@ -56,41 +55,3 @@ for k = 1:length(u)
     writeVideo(v, frame);
 end
 close(v)
-
-% Plot IC
-figure (3)
-set(groot,'defaultAxesTickLabelInterpreter','latex'); 
-plot(u0)
-view(0,90)
-axis tight
-ax = gca;
-ax.FontSize = 10;
-cola = colorbar;
-cola.Label.String = '$u(x,t)$';
-cola.Label.Interpreter = 'latex';
-cola.FontSize = 14;
-xticks(0:20:30*pi)
-yticks(0:20:30*pi)
-xlabel('$x$','Interpreter','latex','FontSize',14)
-ylabel('$y$','Interpreter','latex','FontSize',14)
-title('Initial Condition','Interpreter','latex','FontSize',14)
-daspect([1 1 1])
-
-% Plot final solution
-figure (4)
-set(groot,'defaultAxesTickLabelInterpreter','latex'); 
-plot(u{end})
-view(0,90)
-axis tight
-ax = gca;
-ax.FontSize = 10;
-cola = colorbar;
-cola.Label.String = '$u(x,t)$';
-cola.Label.Interpreter = 'latex';
-cola.FontSize = 14;
-xticks(0:20:30*pi)
-yticks(0:20:30*pi)
-xlabel('$x$','Interpreter','latex','FontSize',14)
-ylabel('$y$','Interpreter','latex','FontSize',14)
-title('Solution at time $t=20$','Interpreter','latex','FontSize',14)
-daspect([1 1 1])
