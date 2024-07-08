@@ -43,7 +43,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed # Parallelism
 ```python
 w = wsindy(U, fj, alpha, **params)
 ```
-###### Example algorithm hyperparameters specification:
+###### Example algorithm hyperparameter specification:
 ```python
 # Grid parameters (should match dimension of dataset)
 (Lx, Ly, T) = (30*np.pi, 30*np.pi, 20)
