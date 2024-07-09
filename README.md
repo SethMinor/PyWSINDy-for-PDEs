@@ -77,6 +77,7 @@ params = {
     'dt' : dt,
 
     # m = explicit (mx,...,mt) values
+    # s = explicit (sx,...,st) values
     # lambdas = MSTLS threshold search space
     # threshold = known optimal threshold
     # p = explicit (px,...,pt) values
