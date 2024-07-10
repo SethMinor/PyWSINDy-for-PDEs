@@ -30,8 +30,9 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy
-import itertools
 import symengine as sp
+import itertools
+import re
 ```
 ###### Optional dependencies based upon GPU/parallelism features are as follows:
 ```python
