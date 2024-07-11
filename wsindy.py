@@ -6,11 +6,11 @@ def wsindy(U, fj, alpha, **kwargs):
   grid, dicts, hyperparams = kwarg_handling(U, alpha, **kwargs)
 
   # Individual variables/hyperparameters
-  (U, D, X, dX, aux_fields) = grid
+  (U, D, X, dX) = grid
   (m, lambdas, p, tau, scales, mask) = hyperparams
 
   # Kwarg dictionaries
-  (print_dict, tf_dict, LHS_kwargs, MSTLS_dict, model_dict) = dicts
+  (print_dict, tf_dict, LHS_kwargs, L_dict, MSTLS_dict, model_dict) = dicts
   #---------------------------------------------------------------------------
 
   # Test Function Creation
@@ -30,9 +30,9 @@ def wsindy(U, fj, alpha, **kwargs):
     b.append(create_b(U[n].clone(), LHS_tf, dX, mask, D, scales=LHS_kwargs[n]))
   b = torch.cat(tuple(b), 1)
 
-  # Model library (K x SJ), where J = beta_bar^n
-  L = create_L(U, test_fcns, dX, mask, D, alpha, fj, scales=scales)
-  #L = create_L_parallel(U, test_fcns, dX, mask, D, alpha, fj, scales=scales)
+  # Model library (K x SJ), where J=|{fj}|
+  L = create_L(U, test_fcns, dX, mask, D, alpha, fj, **L_dict)
+  #L = create_L_parallel(U, test_fcns, dX, mask, D, alpha, fj, **L_dict)
   #---------------------------------------------------------------------------
 
   # MSTLS Optimization
@@ -42,13 +42,12 @@ def wsindy(U, fj, alpha, **kwargs):
   MSTLS_dict['w_LS'] = w_LS.clone()
 
   # Compute sparse weight vector
-  w, thresh, loss_val = MSTLS(L, b, lambdas, **MSTLS_dict)
+  w, thresh, Loss = MSTLS(L, b, lambdas, **MSTLS_dict)
   #---------------------------------------------------------------------------
 
   # Print Results
   #---------------------------------------------------------------------------
-  print_dict['L'] = L
-  (print_dict['loss_val'], print_dict['thresh']) = (loss_val, thresh)
+  print_dict['L'], print_dict['Loss'], print_dict['thresh'] = L, Loss, thresh
   print_report(**print_dict)
 
   # Print discovered PDE
