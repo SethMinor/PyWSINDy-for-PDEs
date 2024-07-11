@@ -70,8 +70,9 @@ params = {
     # dx = spatial discretization(s)
     # t = temporal domain
     # dt = temporal discretization
-    # aux_fields = extra variables
-    #-------------------------------
+    # aux_fields = extra library variables
+    # aux_scales = scaling factors for aux fields
+    #--------------------------------------------
     'x' : [(0, Lx), (0, Ly)],
     'dx' : [dx, dy],
     't' : (0, T),
