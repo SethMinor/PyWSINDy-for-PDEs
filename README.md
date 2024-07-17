@@ -93,7 +93,9 @@ params = {
     # init_guess = [x0, y0, m1, m2], for (kx,kt) curve fit
     # max_its = specify maximum number of MSTLS iterations
     # sigma_NR = noise ratio of artifical gaussian noise
+    # sparsify = use 'original' or 'scaled' data in MSTLS
     #-----------------------------------------------------
     'verbosity' : 1,
-    'sigma_NR' : 0.0}
+    'sigma_NR' : 0.0,
+    'sparsify' : 'original'}
 ```
