@@ -1,4 +1,4 @@
-# WSINDy for PDEs, in Python
+# WSINDy for PDEs (Python)
 ##### A Python 3 implementation of the Weak-form Sparse Identification of Nonlinear Dynamics (WSINDy) algorithm for partial differential equations (PDEs).
 ##### Based on the [JCP paper by **D. A. Messenger**, **D. M. Bortz** 2021](https://www.sciencedirect.com/science/article/pii/S0021999121004204). <br> See authors' original [MatLab code repository](https://github.com/MathBioCU/WSINDy_PDE) (copyright 2020, all rights reserved by original authors).
 ##### For other existing implementations, see also [PySINDy documentation](https://pysindy.readthedocs.io/en/latest/examples/12_weakform_SINDy_examples/example.html).
