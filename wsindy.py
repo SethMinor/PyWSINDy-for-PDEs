@@ -54,6 +54,10 @@ def wsindy(U, fj, alpha, **kwargs):
   term_names = get_term_names(U, fj, alpha, D, **model_dict)
   pde = get_model(w, term_names)
   print(f'Discovered model:\n{pde}')
+
+  # Percentage of explained variance
+  mu = (1/MSTLS_dict['yus'][n]) * torch.diag(MSTLS_dict['M']).unsqueeze(1)
+  print_stats(L, (1/mu)*w, b)
   #---------------------------------------------------------------------------
 
   # Return sparse weight vector
