@@ -11,6 +11,7 @@
 - ### `WSINDy.ipynb`<br>[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SethMinor/WSINDy-for-Python/blob/main/WSINDy.ipynb)<br><sub> A template for running WSINDy on your own data. See the 'Usage' section below for details. <br><sup> Stable as of July, 2024. </sup></sub>
 - ### `WSINDy_Tutorial.ipynb`<br>[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SethMinor/WSINDy-for-Python/blob/main/WSINDy_Tutorial.ipynb)<br><sub> This notebook serves as a walkthrough and introduction to the WSINDy algorithm. As an example, it shows how the Kuramoto-Sivashinksy equation can be recovered from data (see the picture above). <br><sup> Stable as of July, 2024. </sup></sub>
 - ### `WSINDy_SH23.ipynb`<br>[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SethMinor/WSINDy-for-Python/blob/main/WSINDy_SH23.ipynb)<br><sub> The WSINDy algorithm applied to the Swift-Hohenberg (23) equation. Simulation data were obtained using MatLab's `chebfun` package; see `sh23_simulation.m` and `chebfun.org/examples/pde/SwiftHohenberg.html`. <br><sup> Stable as of July, 2024. </sup></sub>
+- ### `JHTDB_WSINDy.ipynb`<br>[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SethMinor/WSINDy-for-Python/blob/main/JHTDB_WSINDy.ipynb)<br><sub> Uses a numerical simulation the ideal MHD equations from the [Johns Hopkins Tubulence Database](https://turbulence.pha.jhu.edu/Forced_MHD_turbulence.aspx) as a dataset. <br><sup> Stable as of August, 2024. </sup></sub>
 ###### To access a dataset stored in Google Drive (e.g., `/content/drive/My Drive/WSINDy/dataset_name.txt`) while using Google Colab, use the following commands to change directories:
 ```python
 # Create directory if necessary
@@ -23,7 +24,7 @@ drive.mount('/content/drive')
 ```
 ## Python Files
 - ### `wsindy.py` <br> [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-310/) <br><sub> Returns sparse weights for candidate basis functions. See the 'Usage' section below for details. <br><sup> Stable as of July, 2024. </sup></sub>
-- ### `helper_functions.py` <br> [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-310/) <br><sub> Functions called during the main `wsindy` routine. <br><sup> Stable as of ?, 2024. </sup></sub>
+## Libraries
 ###### This algorithm uses the following dependencies:
 ```python
 import torch
