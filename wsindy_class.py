@@ -895,8 +895,7 @@ class wsindy:
 
     # Print the explained variance
     self.compute_stats()
-
-    # DISPLAY PLOTS
+    return
   
   def get_term_names(self):
     """
