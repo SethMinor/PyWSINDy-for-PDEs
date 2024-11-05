@@ -484,6 +484,7 @@ class wsindy:
       sigma = self.noise * U_rms[i]
       noise = torch.normal(mean=0, std=sigma, size=u_i.shape)
       u_i += noise
+    return
 
 
   def set_jacobian(self):
