@@ -38,7 +38,7 @@ for ti = 1:length(t)
 end
 
 % Write the csv file
-writematrix(u_storage,'SH23_1');
+writematrix(u_storage,'SH23');
 
 %% Save a video
 
