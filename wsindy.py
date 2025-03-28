@@ -139,14 +139,17 @@ class WSINDy:
     for j in range(num_terms):
       aj = derivs[j]
       bj = powers[j]
-      yx_exps = [yx[d]**(self.alpha[0][d] - self.alpha[aj][d]) for d in range(D)]
-      yx_term = np.prod(yx_exps)
-      yt_term = yt**(self.alpha[0][-1] - self.alpha[aj][-1])
+      if (aj==None) or (bj==None):
+        mu[j] = 1.
+      else:
+        yx_exps = [yx[d]**(self.alpha[0][d] - self.alpha[aj][d]) for d in range(D)]
+        yx_term = np.prod(yx_exps)
+        yt_term = yt**(self.alpha[0][-1] - self.alpha[aj][-1])
       
-      yu_term = [yu[n]**(bj[n]) for n in range(len(yu))]
-      yu_term = np.prod(yu_term)
+        yu_term = [yu[n]**(bj[n]) for n in range(len(yu))]
+        yu_term = np.prod(yu_term)
 
-      mu[j] = yu_term * yx_term * yt_term
+        mu[j] = yu_term * yx_term * yt_term
     return mu/self.yu
 
   # Returns symbolic derivatives
