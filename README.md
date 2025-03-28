@@ -1,8 +1,11 @@
 # WSINDy for PDEs
-##### A `Python 3` implementation of the Weak Sparse Identification of Nonlinear Dynamics (WSINDy) algorithm for partial differential equations.
-##### Based on the [JCP paper by **D. A. Messenger**, **D. M. Bortz** 2021](https://www.sciencedirect.com/science/article/pii/S0021999121004204). <br> See authors' original [MatLab code repository](https://github.com/MathBioCU/WSINDy_PDE) (copyright 2020, all rights reserved by original authors).
-##### For other existing implementations, see also [PySINDy documentation](https://pysindy.readthedocs.io/en/latest/examples/12_weakform_SINDy_examples/example.html).
-###### Stable as of August, 2024.
+## !!UNDER CONSTRUCTION!!
+A Python 3 implementation of the Weak-form Sparse Identification of Nonlinear Dynamics (WSINDy) algorithm for partial differential equations.
+
+Based on the [JCP paper by **D. A. Messenger**, **D. M. Bortz** 2021](https://www.sciencedirect.com/science/article/pii/S0021999121004204). <br> See authors' original [MatLab code repository](https://github.com/MathBioCU/WSINDy_PDE).
+
+For other existing implementations, see also [PySINDy documentation](https://pysindy.readthedocs.io/en/latest/examples/12_weakform_SINDy_examples/example.html).
+###### Stable as of March, 2025.
 [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-310/)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SethMinor/WSINDy-for-Python/blob/main/WSINDy.ipynb)
 ---
@@ -99,4 +102,34 @@ params = {
     'verbosity' : 1,
     'sigma_NR' : 0.0,
     'sparsify' : 'original'}
+```
+
+### Library Creation
+The user defines the candidate terms in the library.
+
+#### Default Library
+To create a library of homogeneous monomials and their derivatives, use:
+```python
+[G,powers,derivs,rhs_names] = model.create_default_library()
+model.set_library(G, powers, derivs, rhs_names)
+```
+
+#### Custom Library
+Specify a sequence of terms $g(i,j)$ by providing lists of $\big(\mathbf{g}, \, j, \, i, \,$ `name` $\big)$ information:
+```python
+G = [tensor1, ..., tensorN]
+powers = [int1, ..., intN]
+derivs = [int1, ..., intN]
+rhs_names = [string1, ..., stringN]
+
+model.set_library(G, powers, derivs, rhs_names)
+```
+For fully non-homogeneous functions, set $j$ such that $\beta_j =$ `powers[j] = [0, ..., 0]`. <br> Also see the following helper functions:
+- `model.compute_weak_poly(...)`
+- `model.compute_weak_multipoly(...)`
+- `model.compute_weak_trig(...)`
+Convolved tensors should be evaluated over query points $\{(\boldsymbol{x}_k, t_k)\}$ using `tensor[model.conv_mask]`. For example:
+```python
+g = compute_weak_poly(model.U, kernels, model.spacing, yu=model.yu, yxyt=yxyt)
+g = g[model.conv_mask]
 ```
