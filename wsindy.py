@@ -1,14 +1,4 @@
-import torch
-import scipy
-import numpy as np
-import itertools
-import symengine as sp
-
-import torch.linalg as la
-from scipy.signal import convolve
-from scipy.special import factorial
-import matplotlib.pyplot as plt
-from tqdm import tqdm
+from helper_fcns import *
 
 class WSINDy:
   def __init__(self, U, alpha, beta, X, V=[], names=None, m=None, p=None, s=None,
