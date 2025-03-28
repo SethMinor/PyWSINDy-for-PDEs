@@ -1,3 +1,15 @@
+import torch
+import scipy
+import numpy as np
+import itertools
+import symengine as sp
+
+import torch.linalg as la
+from scipy.signal import convolve
+from scipy.special import factorial
+import matplotlib.pyplot as plt
+from tqdm import tqdm
+
 class WSINDy:
   def __init__(self, U, alpha, beta, X, V=[], names=None, m=None, p=None, s=None,
                tau=1e-10, tau_hat=2, init_guess=[10,1,10,0], verbosity=True, rescale=True):
