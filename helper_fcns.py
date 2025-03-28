@@ -1,4 +1,15 @@
 # HELPER FUNCTIONS
+import torch
+import scipy
+import numpy as np
+import itertools
+import symengine as sp
+
+import torch.linalg as la
+from scipy.signal import convolve
+from scipy.special import factorial
+import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 # Two-piece linear approximation
 def changepoint(x, x0, y0, m1, m2):
