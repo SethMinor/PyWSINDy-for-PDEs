@@ -25,17 +25,9 @@ def subsample(s, m, x):
   return list(range(m, x.shape[0]-m, s))
 
 # Return subsampled tensor to normal dimensions
-def reshape_subsampled_tensor(U, mask, s, m, X):
+def reshape_subsampled_tensor(Uk, mask, s, m, X):
   xk = [len(subsample(s[i], m[i], X[i])) for i in range(len(X))]
-  UK = U[mask].clone()
-  return UK.reshape(tuple(xk))
-
-# Compute scale for a state variable, yu
-def compute_u_scale(u, beta_max):
-  U_2 = la.norm(u).item()
-  U_beta = la.norm(u**beta_max).item()
-  yu = (U_2 / U_beta)**(1 / beta_max)
-  return yu
+  return Uk.reshape(tuple(xk))
 
 # Carefully compute n-choose-k with non-integer k
 def my_nchoosek(n, k):
@@ -52,22 +44,35 @@ def D_phibar(x, D, x_sym, phi_bar):
   else:
     return 0.
 
-# Compute the weak time derivative, <phi_t, u>
-def compute_weak_dudt(u, d_phi_dt, spacing, yu=1., yxyt=1.):
-  weak_dudt = torch.from_numpy(convolve(yu*u, d_phi_dt, mode='same'))
-  weak_dudt *= yxyt * np.prod(spacing)
-  return weak_dudt
+# FFT-base convolution with separable kernel
+def sep_convolve(u, kernels):
+  conv = u.clone()
+  for i, Ki in enumerate(kernels):
+    shape = u.ndim * [1]
+    shape[i] = -1
+    conv = convolve(conv, Ki.reshape(shape), mode='valid')
+  return conv
 
-# Compute the weak polynomial term, <D_phi, u^beta>
-def compute_weak_poly(u, beta, D_phi, spacing, yu=1., yxyt=1.):
-  weak_poly = torch.from_numpy(convolve((yu*u)**beta, D_phi, mode='same'))
+# Compute a weak polynomial term, <D_phi, u^power>
+def compute_weak_poly(u, kernels, spacing, power=1., yu=1., yxyt=1.):
+  weak_poly = torch.from_numpy(sep_convolve((yu*u)**power, kernels))
   weak_poly *= yxyt * np.prod(spacing)
   return weak_poly
 
-# Compute the weak trig term, <D_phi, cos(au+b)>
-def compute_weak_trig(u, D_phi, spacing, freq=1., phase=0., yxyt=1.):
+# Weak multivariable polynomial term, <D_phi, u1^p1 * ... * un^pn>
+def compute_weak_multipoly(u, kernels, spacing, power=[1.], yu=[1.], yxyt=1.):
+  assert type(u) == type(power) == type(yu) == list, "Must provide a list."
+  monomial = 1
+  for i,ui in enumerate(u):
+    monomial *= (yu[i]*ui)**power[i]
+  weak_poly = torch.from_numpy(sep_convolve(monomial, kernels))
+  weak_poly *= yxyt * np.prod(spacing)
+  return weak_poly
+
+# Compute a weak trig term, <D_phi, cos(au+b)>
+def compute_weak_trig(u, kernels, spacing, freq=1., phase=0., yxyt=1.):
   trig = torch.cos(freq*u + phase)
-  weak_trig = torch.from_numpy(convolve(trig, D_phi, mode='same'))
+  weak_trig = torch.from_numpy(sep_convolve(trig, kernels))
   weak_trig *= yxyt * np.prod(spacing)
   return weak_trig
 
@@ -89,9 +94,9 @@ def symbolic_pde(lhs_name, rhs_names, w):
   pde = []
   for coeff, term in zip(nonzero_coeffs, nonzero_terms):
     if coeff >= 0.:
-      pde.append(f"+ {coeff:.2f}*{term}")
+      pde.append(f"+ {coeff:.2f}{term}")
     else:
-      pde.append(f"- {abs(coeff):.2f}*{term}")
+      pde.append(f"- {abs(coeff):.2f}{term}")
   pde = lhs_name + " = " + " ".join(pde)
   return pde
 
