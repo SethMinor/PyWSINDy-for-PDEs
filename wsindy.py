@@ -149,8 +149,8 @@ class WSINDy:
         yu_term = [yu[n]**(bj[n]) for n in range(len(yu))]
         yu_term = np.prod(yu_term)
 
-        mu[j] = yu_term * yx_term * yt_term
-    return mu/self.yu
+        mu[j] = (yu_term * yx_term * yt_term)/self.yu
+    return mu
 
   # Returns symbolic derivatives
   def get_derivative_names(self):
