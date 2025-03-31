@@ -1,7 +1,7 @@
 from helper_fcns import *
 
 class WSINDy:
-  def __init__(self, U, alpha, beta, X, V=[], names=None, m=None, p=None, s=None,
+  def __init__(self, U, alpha, beta, X, V=[], names=None, m=None, p=None, s=None, jacobian = 1.,
                tau=1e-10, tau_hat=2, init_guess=[10,1,10,0], verbosity=True, rescale=True):
     self.U = U
     self.V = V
@@ -9,6 +9,7 @@ class WSINDy:
     self.beta = beta
     self.X = X
 
+    self.jacobian = jacobian
     self.tau = tau
     self.tau_hat = tau_hat
     self.verbosity = verbosity
@@ -234,9 +235,9 @@ class WSINDy:
     kernel = self.kernels[0]
     if self.rescale:
       yxyt = np.prod(self.yx + [self.yt])
-      lhs = compute_weak_poly(self.U, kernel, self.spacing, yu=self.yu, yxyt=yxyt)
+      lhs = compute_weak_poly(self.U, kernel, self.spacing, yu=self.yu, yxyt=yxyt, jacobian=self.jacobian)
     else:
-      lhs = compute_weak_poly(self.U, kernel, self.spacing)
+      lhs = compute_weak_poly(self.U, kernel, self.spacing, jacobian=self.jacobian)
     b = lhs[self.conv_mask]
     self.lhs_name = lhs_name
     self.lhs = b
@@ -262,7 +263,7 @@ class WSINDy:
           assert (len(bj)-1) == len(self.V), "Inconsistent number of powers!"
           derivs.append(i)
           powers.append(bj)
-          term = compute_weak_multipoly(state, kernel, self.spacing, power=bj, yu=yu, yxyt=yxyt)
+          term = compute_weak_multipoly(state, kernel, self.spacing, power=bj, yu=yu, yxyt=yxyt, jacobian=self.jacobian)
           name = self.format_monomial(bj) + self.derivative_names[i]
           G.append(term[self.conv_mask])
           rhs_names.append(name)
