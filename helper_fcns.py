@@ -56,8 +56,8 @@ def D_phibar(x, D, x_sym, phi_bar):
     return 0.
 
 # FFT-base convolution with separable kernel
-def sep_convolve(u, kernels):
-  conv = u.clone()
+def sep_convolve(u, kernels, jacobian=1.):
+  conv = jacobian * u.clone()
   for i, Ki in enumerate(kernels):
     shape = u.ndim * [1]
     shape[i] = -1
@@ -65,25 +65,25 @@ def sep_convolve(u, kernels):
   return conv
 
 # Compute a weak polynomial term, <D_phi, u^power>
-def compute_weak_poly(u, kernels, spacing, power=1., yu=1., yxyt=1.):
-  weak_poly = torch.from_numpy(sep_convolve((yu*u)**power, kernels))
+def compute_weak_poly(u, kernels, spacing, power=1., yu=1., yxyt=1., jacobian=1.):
+  weak_poly = torch.from_numpy(sep_convolve((yu*u)**power, kernels, jacobian=jacobian))
   weak_poly *= yxyt * np.prod(spacing)
   return weak_poly
 
 # Weak multivariable polynomial term, <D_phi, u1^p1 * ... * un^pn>
-def compute_weak_multipoly(u, kernels, spacing, power=[1.], yu=[1.], yxyt=1.):
+def compute_weak_multipoly(u, kernels, spacing, power=[1.], yu=[1.], yxyt=1., jacobian=1.):
   assert type(u) == type(power) == type(yu) == list, "Must provide a list."
   monomial = 1
   for i,ui in enumerate(u):
     monomial *= (yu[i]*ui)**power[i]
-  weak_poly = torch.from_numpy(sep_convolve(monomial, kernels))
+  weak_poly = torch.from_numpy(sep_convolve(monomial, kernels, jacobian=jacobian))
   weak_poly *= yxyt * np.prod(spacing)
   return weak_poly
 
 # Compute a weak trig term, <D_phi, cos(au+b)>
-def compute_weak_trig(u, kernels, spacing, freq=1., phase=0., yxyt=1.):
+def compute_weak_trig(u, kernels, spacing, freq=1., phase=0., yxyt=1., jacobian=1.):
   trig = torch.cos(freq*u + phase)
-  weak_trig = torch.from_numpy(sep_convolve(trig, kernels))
+  weak_trig = torch.from_numpy(sep_convolve(trig, kernels, jacobian=jacobian))
   weak_trig *= yxyt * np.prod(spacing)
   return weak_trig
 
