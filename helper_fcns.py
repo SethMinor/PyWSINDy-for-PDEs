@@ -123,3 +123,25 @@ def add_noise(U, sigma_NR):
   sigma = sigma_NR * U_rms
   epsilon = torch.normal(mean=0, std=sigma, size=U.shape, dtype=torch.float64)
   return U + epsilon
+
+# Augmented libraries
+def composite_term(columns, coeffs, name, model, lib_info):
+  [G, powers, derivs, rhs_names] = lib_info
+  if model.rescale:
+    mu = model.compute_scale_matrix(powers, derivs)
+  else:
+    mu = torch.ones(len(powers))
+
+  term = 0
+  for i,column in enumerate(sorted(columns, reverse=True)):
+    term += coeffs[i] * (1/mu[column]) * G[column]
+    G.pop(column)
+    powers.pop(column)
+    derivs.pop(column)
+    rhs_names.pop(column)
+
+  G.append(term)
+  powers.append(None)
+  derivs.append(None)
+  rhs_names.append(name)
+  return G, powers, derivs, rhs_names
