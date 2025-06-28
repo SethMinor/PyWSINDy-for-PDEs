@@ -1,23 +1,33 @@
 # WSINDy for PDEs
 A Python 3 implementation of the Weak-form Sparse Identification of Nonlinear Dynamics (WSINDy) algorithm for partial differential equations.
 
-- Based on the [JCP paper by **D. A. Messenger**, **D. M. Bortz** (2021)](https://www.sciencedirect.com/science/article/pii/S0021999121004204)
+Based on the [JCP paper by **D. A. Messenger**, **D. M. Bortz** (2021)](https://www.sciencedirect.com/science/article/pii/S0021999121004204).
 - See the original authors' [**MatLab** code repository](https://github.com/MathBioCU/WSINDy_PDE)
-- Also see [this implemetation of **PyWSINDy for ODEs**](https://github.com/MathBioCU/PyWSINDy_ODE)
+- Also see the [**PyWSINDy for ODEs** code repository](https://github.com/MathBioCU/PyWSINDy_ODE)
 
-For other existing implementations, also see the [PySINDy documentation](https://pysindy.readthedocs.io/en/latest/examples/12_weakform_SINDy_examples/example.html).
+For other existing implementations, also see the [**PySINDy** documentation](https://pysindy.readthedocs.io/en/latest/examples/12_weakform_SINDy_examples/example.html).
 ###### Stable as of June, 2025.
 [![Python 3.11](https://img.shields.io/badge/python-%3E=3.11-blue?logo=python)](https://img.shields.io/badge/python-%3E=3.11-blue?logo=python)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SethMinor/PyWSINDy-for-PDEs/blob/main/wsindy_examples.ipynb)
 ---
 ![wsindy_github_pic](https://github.com/SethMinor/WSINDy-for-Python/assets/97004318/8e567430-7368-420c-bf94-6eee224f7dc5)
-## Notebooks
-- ### `WSINDy.ipynb`<br>[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SethMinor/WSINDy-for-Python/blob/main/WSINDy.ipynb)<br><sub> A template for running WSINDy on your own data. See the 'Usage' section below for details. <br><sup> Stable as of August, 2024. </sup></sub>
-- ### `WSINDy_Tutorial.ipynb`<br>[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SethMinor/WSINDy-for-Python/blob/main/WSINDy_Tutorial.ipynb)<br><sub> This notebook serves as a walkthrough and introduction to the WSINDy algorithm. As an example, it shows how the Kuramoto-Sivashinksy equation can be recovered from data (see the picture above). <br><sup> Stable as of July, 2024. </sup></sub>
-- ### `WSINDy_SH23.ipynb`<br>[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SethMinor/WSINDy-for-Python/blob/main/WSINDy_SH23.ipynb)<br><sub> The WSINDy algorithm applied to the Swift-Hohenberg (23) equation. Simulation data were obtained using MatLab's *chebfun* package; see `sh23_simulation.m` and [chebfun.org](https://chebfun.org) (navigate to `examples > Swift Hohenberg`). <br><sup> Stable as of July, 2024. </sup></sub>
-- ### `JHTDB_WSINDy.ipynb`<br>[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SethMinor/WSINDy-for-Python/blob/main/JHTDB_WSINDy.ipynb)<br><sub> Uses a numerical simulation of the ideal MHD equations, sourced from the [Johns Hopkins Tubulence Database](https://turbulence.pha.jhu.edu/Forced_MHD_turbulence.aspx), as a dataset for WSINDy. <br><sup> Stable as of August, 2024. </sup></sub>
-###### To access a dataset stored in Google Drive (e.g., `/content/drive/My Drive/WSINDy/dataset_name.txt`) while using Google Colab, use the following commands to change directories:
-```python
+
+## Python Files [![Python 3.11](https://img.shields.io/badge/python-%3E=3.11-blue?logo=python)](https://img.shields.io/badge/python-%3E=3.11-blue?logo=python)
+The core functionality of this codebase is contained within two files:
+- ###### [`wsindy.py`](https://github.com/SethMinor/PyWSINDy-for-PDEs/blob/main/wsindy.py) <br> The fundamental WSINDy class definition.
+- ###### [`helper_fcns.py`](https://github.com/SethMinor/PyWSINDy-for-PDEs/blob/main/helper_fcns.py) <br> A list of utilities and helper functions.
+
+## Examples [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SethMinor/PyWSINDy-for-PDEs/blob/main/wsindy_examples.ipynb)
+The [**`wsindy_examples.ipynb`**](https://github.com/SethMinor/PyWSINDy-for-PDEs/blob/main/wsindy_examples.ipynb) notebook illustrates the Weak SINDy algorithm being applied to various spatiotemporal systems:
+
+- ###### [`KURAMOTO SIVASHINKSY`](https://en.wikipedia.org/wiki/Kuramoto%E2%80%93Sivashinsky_equation) <br> Numerical simulation of the $(1+1)$-dimensional Kuramoto-Sivashinksy equation (pictured above). See the [`KS.txt`](https://github.com/SethMinor/PyWSINDy-for-PDEs/blob/main/Datasets/KS.txt) file (1.3 MB). The data were sourced from [this GitHub repository](https://github.com/MathBioCU/WSINDy_PDE/blob/master/datasets/KS.mat).
+
+- ###### [`SWIFT HOHENBERG`](https://en.wikipedia.org/wiki/Swift%E2%80%93Hohenberg_equation) <br> Numerical simulation of the $(2+1)$-dimensional Swift-Hohenberg (23) equation. Simulated data were obtained using MatLab's [Chebfun](https://www.chebfun.org/examples/pde/SwiftHohenberg.html) package, see [`sh23_simulation.m`](https://github.com/SethMinor/PyWSINDy-for-PDEs/blob/main/Datasets/SH23_simulation.m).
+
+- ###### [`MHD EQUATIONS`](https://turbulence.pha.jhu.edu/docs/README-MHD.pdf) <br> Numerical simulation of forced turbulence in the $(3+1)$-dimensional incompressible MHD equations, sourced from the [Johns Hopkins Tubulence Database](https://turbulence.pha.jhu.edu/Forced_MHD_turbulence.aspx).
+
+*Note:* to access a dataset stored in Google Drive (e.g., `/content/drive/My Drive/WSINDy/dataset_name.txt`) while using Google Colab, use the following commands to change directories.
+```python3
 # Create directory if necessary
 !mkdir -p "/content/drive/My Drive/WSINDy"
 
@@ -26,8 +36,14 @@ drive.mount('/content/drive')
 
 %cd /content/drive/My Drive/WSINDy
 ```
-## Python Files
-- ### `wsindy.py` <br> [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-310/) <br><sub> Returns sparse weights for candidate basis functions. See the 'Usage' section below for details. <br><sup> Stable as of July, 2024. </sup></sub>
+
+## Install
+###### In a Bash environment:
+```python3
+wget -q https://raw.githubusercontent.com/SethMinor/PyWSINDy-for-PDEs/main/wsindy.py
+wget -q https://raw.githubusercontent.com/SethMinor/PyWSINDy-for-PDEs/main/helper_fcns.py
+```
+
 ## Dependencies
 ###### This codebases uses the following modules and naming conventions:
 ```python3
@@ -46,93 +62,120 @@ from tqdm import tqdm
 from wsindy import *
 from helper_fcns import *
 ```
-## Usage
-###### For a dataset `U` (tensor), function library `fj` (dictionary), and derivative library `alpha` (tuple), the syntax is as follows:
-```python
-w = wsindy(U, fj, alpha, **params)
+
+## Basic Usage
+###### For a dataset `U`, derivative library `alpha`, function library `beta`, and coordinate axes `X`, the syntax to create a class instance is:
+```python3
+model = wsindy(U, alpha, beta, X, **params)
 ```
-###### Example algorithm hyperparameter specification:
-```python
-# Grid parameters (should match dimension of dataset)
-(Lx, Ly, T) = (30*np.pi, 30*np.pi, 20)
-(dx, dy, dt) = (Lx/U.shape[0], Ly/U.shape[1], T/U.shape[-1])
 
-# Function library
-fields = 1 # Number of scalar fields
-powers = 4 # Maximum monomial power
-poly = get_poly(powers, fields)
-trig = () # (Frequency, phase) pairs
-fj = {'poly': poly, 'trig': trig}
+###### Example hyperparameter specification:
+```python3
+# Coordinate axes (x,y,...,t)
+X = [x,t]
 
-# Derivative library
-lhs = ((0,0,1),) # Evolution operator D^0
-dimension = 2 # Spatial dimensions
-pure_derivs = 4 # Include up to fourth order
-cross_derivs = 2 # Include up to second order
-rhs = get_alpha(dimension, pure_derivs, cross_derivs)
-alpha = lhs + rhs
+# Candidate derivatives (dx,dy,...,dt)
+alpha = [[0,1], # d/dt
+         [0,0], # 1
+         [1,0], # d/dx
+         [2,0], # d^2/dx^2
+         [3,0], # d^3/dx^3
+         [4,0]] # d^4/dx^4
 
+# Candidate monomial powers (u1,...,ud)
+beta = [[0], # U^0 = 1
+        [1], # U^1
+        [2]] # U^2
+```
+
+###### Full list of hyperparameters:
+```python3
 params = {
-    # x = spatial domain(s)
-    # dx = spatial discretization(s)
-    # t = temporal domain
-    # dt = temporal discretization
-    # aux_fields = extra library variables
-    # aux_scales = scaling factors for aux fields
-    #--------------------------------------------
-    'x' : [(0, Lx), (0, Ly)],
-    'dx' : [dx, dy],
-    't' : (0, T),
-    'dt' : dt,
-
-    # m = explicit (mx,...,mt) values
-    # s = explicit (sx,...,st) values
-    # lambdas = MSTLS threshold search space
-    # threshold = known optimal threshold
-    # p = explicit (px,...,pt) values
-    # tau = test function tolerance
-    # tau_hat = Fourier test function tolerance
-    # scales = explicit (yu,yx,yt) scaling factors
-    # M = explicit scaling matrix
-    #---------------------------------------------
-
-    # verbosity = report info and create plots? (0 or 1)
-    # init_guess = [x0, y0, m1, m2], for (kx,kt) curve fit
-    # max_its = specify maximum number of MSTLS iterations
-    # sigma_NR = noise ratio of artifical gaussian noise
-    # sparsify = use 'original' or 'scaled' data in MSTLS
-    #-----------------------------------------------------
-    'verbosity' : 1,
-    'sigma_NR' : 0.0,
-    'sparsify' : 'original'}
+    'V': [],           # Extra variables [U2,...,Ud]
+    'names': None,     # Variable names ['u_1',...,'u_d']
+    'm': None,         # Test fcn support [mx,...,mt]
+    'p': None,         # Test fcn degrees [px,...,pt]
+    's': None,         # Subsampling [sx,...,st]
+    'jacobian': 1.,    # Volume element
+    'tau': 1e-10,      # Test fcn tolerance
+    'tau_hat': 2,      # Fourier test fcn tolerance
+    'verbosity': True, # Print out details
+    'rescale': True,   # Use preconditioner for LS solves
+    'init_guess': [10,1,10,0], # [x0, y0, m1, m2], for (kx,kt) curve fit
+}
 ```
 
-### Library Creation
-The user defines the candidate terms in the library.
-
-#### Default Library
-To create a library of homogeneous monomials and their derivatives, use:
-```python
+###### Create library of candidate terms and solve for sparse coefficients:
+```python3
+# Create standard library terms
 [G,powers,derivs,rhs_names] = model.create_default_library()
+
+# Set lhs
+lhs_name = 'u' + model.derivative_names[0]
+model.build_lhs(lhs_name)
+
+# Set library
 model.set_library(G, powers, derivs, rhs_names)
+
+# Find sparse weights
+w = model.MSTLS()
+model.print_report()
 ```
 
-#### Custom Library
-Specify a sequence of terms $g(i,j)$ by providing lists of $\big(\mathbf{g}, \, j, \, i, \,$ `name` $\big)$ information:
-```python
+## Library Customization
+###### Specify a sequence of terms by applying derivative $\mathcal{D}^i$ to function $f_j(u_1, \dots, u_d)$:
+```python3
 G = [tensor1, ..., tensorN]
-powers = [int1, ..., intN]
+powers = [list1, ..., listN]
 derivs = [int1, ..., intN]
 rhs_names = [string1, ..., stringN]
 
 model.set_library(G, powers, derivs, rhs_names)
 ```
-For fully non-homogeneous functions, set $j$ such that $\beta_j =$ `powers[j] = [0, ..., 0]`. <br> Also see the following helper functions:
-- `model.compute_weak_poly(...)`
-- `model.compute_weak_multipoly(...)`
-- `model.compute_weak_trig(...)`
-Convolved tensors should be evaluated over query points $\{(\boldsymbol{x}_k, t_k)\}$ using `tensor[model.conv_mask]`. For example:
-```python
-g = compute_weak_poly(model.U, kernels, model.spacing, yu=model.yu, yxyt=yxyt)
-g = g[model.conv_mask]
+
+###### Print library terms in formatted LaTeX:
+```python3
+display(Math(r'\Theta=' + r'\{' + r', \, '.join(rhs_names) + r'\}'))
+```
+
+###### For non-homogeneous functions, set the corresponding `powers[j] = [0, ..., 0]`. <br> Also see the following [helper functions](https://github.com/SethMinor/PyWSINDy-for-PDEs/blob/main/helper_fcns.py):
+```python3
+compute_weak_poly(...)
+compute_weak_multipoly(...)
+compute_weak_trig(...)
+```
+
+###### Convolved tensors should be evaluated over query points $\{(\boldsymbol{x}_k, t_k)\}$ using `tensor[model.conv_mask]`. For example:
+```python3
+term = compute_weak_poly(model.U, kernels, model.spacing, yu=model.yu, yxyt=yxyt)
+evaluated_term = term[model.conv_mask]
+```
+
+###### An example of trimming terms out of the library:
+```python3
+# Trim out the redundant u_x term
+remove_cols = [6]
+print(f'Removing: {rhs_names[6]}\n')
+
+for column in sorted(remove_cols, reverse=True):
+  G.pop(column)
+  powers.pop(column)
+  derivs.pop(column)
+  rhs_names.pop(column)
+
+display(Math(r'\Theta=' + r'\{' + r',\,'.join(rhs_names) + r'\}'))
+del remove_cols,column
+```
+
+###### An example of combining two columns in a library:
+```python3
+# Augment the library to include an advection term, (u·∇)ζ
+print(f'Combining: {rhs_names[14]}, {rhs_names[31]}')
+
+columns = [14,31]
+coeffs = [1,1]
+name = '(𝘂·∇)ζ'
+info = [G, powers, derivs, rhs_names]
+
+[G,powers,derivs,rhs_names] = composite_term(columns, coeffs, name, model, info)
 ```
