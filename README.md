@@ -1,13 +1,14 @@
 # WSINDy for PDEs
-## !!UNDER CONSTRUCTION!!
 A Python 3 implementation of the Weak-form Sparse Identification of Nonlinear Dynamics (WSINDy) algorithm for partial differential equations.
 
-Based on the [JCP paper by **D. A. Messenger**, **D. M. Bortz** 2021](https://www.sciencedirect.com/science/article/pii/S0021999121004204). <br> See authors' original [MatLab code repository](https://github.com/MathBioCU/WSINDy_PDE).
+- Based on the [JCP paper by **D. A. Messenger**, **D. M. Bortz** (2021)](https://www.sciencedirect.com/science/article/pii/S0021999121004204)
+- See the original authors' [**MatLab** code repository](https://github.com/MathBioCU/WSINDy_PDE)
+- Also see [this implemetation of **PyWSINDy for ODEs**](https://github.com/MathBioCU/PyWSINDy_ODE)
 
-For other existing implementations, see also [PySINDy documentation](https://pysindy.readthedocs.io/en/latest/examples/12_weakform_SINDy_examples/example.html).
-###### Stable as of March, 2025.
-[![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-310/)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SethMinor/WSINDy-for-Python/blob/main/WSINDy.ipynb)
+For other existing implementations, also see the [PySINDy documentation](https://pysindy.readthedocs.io/en/latest/examples/12_weakform_SINDy_examples/example.html).
+###### Stable as of June, 2025.
+[![Python 3.11](https://img.shields.io/badge/python-%3E=3.11-blue?logo=python)](https://img.shields.io/badge/python-%3E=3.11-blue?logo=python)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SethMinor/PyWSINDy-for-PDEs/blob/main/wsindy_examples.ipynb)
 ---
 ![wsindy_github_pic](https://github.com/SethMinor/WSINDy-for-Python/assets/97004318/8e567430-7368-420c-bf94-6eee224f7dc5)
 ## Notebooks
@@ -27,21 +28,23 @@ drive.mount('/content/drive')
 ```
 ## Python Files
 - ### `wsindy.py` <br> [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-310/) <br><sub> Returns sparse weights for candidate basis functions. See the 'Usage' section below for details. <br><sup> Stable as of July, 2024. </sup></sub>
-## Libraries
-###### This algorithm uses the following dependencies:
-```python
+## Dependencies
+###### This codebases uses the following modules and naming conventions:
+```python3
 import torch
-import numpy as np
-import matplotlib.pyplot as plt
 import scipy
-import symengine as sp
+import numpy as np
 import itertools
-import re
-```
-###### Optional dependencies based upon GPU/parallelism features are as follows:
-```python
-import torch.nn.functional as nnF # GPU
-from concurrent.futures import ProcessPoolExecutor, as_completed # Parallelism
+import symengine as sp
+
+import torch.linalg as la
+from scipy.signal import convolve
+from scipy.special import factorial
+import matplotlib.pyplot as plt
+from tqdm import tqdm
+
+from wsindy import *
+from helper_fcns import *
 ```
 ## Usage
 ###### For a dataset `U` (tensor), function library `fj` (dictionary), and derivative library `alpha` (tuple), the syntax is as follows:
