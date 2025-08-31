@@ -70,7 +70,7 @@ class WSINDy:
     if self.verbosity:
       plt.figure(figsize=(6,3))
       Uhat_d = Uhat_d.numpy()
-      plt.plot(freqs, Uhat_d, 'r--', label='Spectrum, $\mathcal{F}_d[U]$')
+      plt.plot(freqs, Uhat_d, 'r--', label=r'Spectrum, $\mathcal{F}_d[U]$')
       plt.plot(freqs, Uhat_d.max()*Hd, 'k', label='Cum. Sum, $H_d$')
       plt.plot(freqs, Uhat_d.max()*changepoint(freqs,*params), 'g--')
       plt.plot(params[0], Uhat_d.max()*params[1], 'go', label='Changepoint, $k_d$')
@@ -100,7 +100,7 @@ class WSINDy:
       plt.scatter(XK1, XK2, color='black', marker='.', s=2, label='Query Points')
       plt.xlabel('$x_1$')
       plt.ylabel('$x_2$')
-      title = '$(x_1, x_2)$' if self.U.ndim==2 else '$(x_1, x_2, \dots)$'
+      title = '$(x_1, x_2)$' if self.U.ndim==2 else r'$(x_1, x_2, \dots)$'
       plt.title('$' + self.names[0] + '$' + title)
       plt.legend(loc='upper right')
       plt.show()
@@ -207,7 +207,7 @@ class WSINDy:
         plt.plot(m*dx*n_grid, test_fcns_d[i,:], '--.', label=f'$i={i}$')
       plt.title(f'Axis $d={d}$ Test Functions')
       plt.xlabel('$x_k - x$')
-      plt.ylabel('$\mathcal{D}^i\phi_d(x_k - x)$')
+      plt.ylabel(r'$\mathcal{D}^i\phi_d(x_k - x)$')
       plt.grid(True)
       plt.legend(loc='upper right')
       plt.show()
