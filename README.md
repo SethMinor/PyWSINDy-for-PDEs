@@ -45,7 +45,7 @@ wget -q https://raw.githubusercontent.com/SethMinor/PyWSINDy-for-PDEs/main/helpe
 ```
 
 ## Dependencies
-###### This codebases uses the following modules and naming conventions:
+###### See [environment.yml](https://github.com/SethMinor/PyWSINDy-for-PDEs/blob/main/environment.yml). This codebases uses the following modules and naming conventions:
 ```python3
 import torch
 import scipy
