@@ -22,7 +22,7 @@ The [**`wsindy_examples.ipynb`**](https://github.com/SethMinor/PyWSINDy-for-PDEs
 
 - ###### [`KURAMOTO SIVASHINKSY`](https://en.wikipedia.org/wiki/Kuramoto%E2%80%93Sivashinsky_equation) <br> Numerical simulation of the $(1+1)$-dimensional Kuramoto-Sivashinksy equation (pictured above). See the [`KS.txt`](https://github.com/SethMinor/PyWSINDy-for-PDEs/blob/main/Datasets/KS.txt) file (1.3 MB). The data were sourced from [this GitHub repository](https://github.com/MathBioCU/WSINDy_PDE/blob/master/datasets/KS.mat).
 
-- ###### [`SWIFT HOHENBERG`](https://en.wikipedia.org/wiki/Swift%E2%80%93Hohenberg_equation) <br> Numerical simulation of the $(2+1)$-dimensional Swift-Hohenberg (23) equation. Simulated data were obtained using MatLab's [Chebfun](https://www.chebfun.org/examples/pde/SwiftHohenberg.html) package, see [`sh23_simulation.m`](https://github.com/SethMinor/PyWSINDy-for-PDEs/blob/main/Datasets/SH23_simulation.m).
+- ###### [`SWIFT HOHENBERG`](https://en.wikipedia.org/wiki/Swift%E2%80%93Hohenberg_equation) <br> Numerical simulation of the $(2+1)$-dimensional Swift-Hohenberg $(23)$ equation. Simulated data were obtained using MatLab's [Chebfun](https://www.chebfun.org/examples/pde/SwiftHohenberg.html) package, see [`sh23_simulation.m`](https://github.com/SethMinor/PyWSINDy-for-PDEs/blob/main/Datasets/SH23_simulation.m).
 
 - ###### [`MHD EQUATIONS`](https://turbulence.pha.jhu.edu/docs/README-MHD.pdf) <br> Numerical simulation of forced turbulence in the $(3+1)$-dimensional incompressible MHD equations, sourced from the [Johns Hopkins Tubulence Database](https://turbulence.pha.jhu.edu/Forced_MHD_turbulence.aspx).
 
@@ -82,16 +82,21 @@ alpha = [[0,1], # d/dt
          [3,0], # d^3/dx^3
          [4,0]] # d^4/dx^4
 
-# Candidate monomial powers (u1,...,ud)
-beta = [[0], # U^0 = 1
-        [1], # U^1
-        [2]] # U^2
+# Candidate monomial powers for (u1,...,ud) := u1
+beta = [[0], # u1^0 = 1
+        [1], # u1^1
+        [2]] # u1^2
+
+# Candidate monomial powers for (u1,...,ud) := (u1,u2)
+beta = [[0,0], # u1^0 * u2^0 = 1
+        [1,0], # u1^1 * u2^0
+        [0,1]] # u1^0 * u2^1
 ```
 
 ###### Full list of hyperparameters:
 ```python3
 params = {
-    'V': [],           # Extra variables [U2,...,Ud]
+    'V': [],           # Extra variables [u2,...,ud]
     'names': None,     # Variable names ['u_1',...,'u_d']
     'm': None,         # Test fcn support [mx,...,mt]
     'p': None,         # Test fcn degrees [px,...,pt]
