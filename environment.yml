@@ -14,5 +14,6 @@ dependencies:
   - pytorch
   - cpuonly
   - tqdm
+  - h5py
   - pip:
     - symengine
