@@ -96,8 +96,8 @@ def loss(w_n, w_LS, G):
   loss_n = LS_term + zero_norm
   return loss_n
 
-# Prints the symbolic PDE
-def symbolic_pde(lhs_name, rhs_names, w):
+# Prints the symbolic ODE or PDE
+def symbolic_eqn(lhs_name, rhs_names, w):
   nonzero_inds = w.nonzero().flatten()
   nonzero_coeffs = w[nonzero_inds].tolist()
   nonzero_terms = [rhs_names[i] for i in nonzero_inds]
