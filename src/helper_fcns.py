@@ -15,7 +15,7 @@ from tqdm import tqdm
 def changepoint(x, x0, y0, m1, m2):
     return np.piecewise(x, [x<x0], [lambda x:m1*(x-x0)+y0, lambda x:m2*(x-x0)+y0])
 
-# Define the scalar-valued function F(m)
+# Function used in spectral matching
 def F_root(m,k,N,tau_hat,tau):
   log_term = np.log((2*m-1)/m**2)
   mid_term = (2*np.pi*k*m)**2 - 3*(tau_hat*N)**2
@@ -56,7 +56,7 @@ def D_phibar(x, D, x_sym, phi_bar):
     return 0.
 
 # FFT-base convolution with separable kernel
-def sep_convolve(u, kernels, jacobian=1.):
+def separable_convolve(u, kernels, jacobian=1.):
   conv = jacobian * u.clone()
   for i, Ki in enumerate(kernels):
     shape = u.ndim * [1]
@@ -66,7 +66,7 @@ def sep_convolve(u, kernels, jacobian=1.):
 
 # Compute a weak polynomial term, <D_phi, u^power>
 def compute_weak_poly(u, kernels, spacing, power=1., yu=1., yxyt=1., jacobian=1.):
-  weak_poly = torch.from_numpy(sep_convolve((yu*u)**power, kernels, jacobian=jacobian))
+  weak_poly = torch.from_numpy(separable_convolve((yu*u)**power, kernels, jacobian=jacobian))
   weak_poly *= yxyt * np.prod(spacing)
   return weak_poly
 
@@ -76,14 +76,14 @@ def compute_weak_multipoly(u, kernels, spacing, power=[1.], yu=[1.], yxyt=1., ja
   monomial = 1
   for i,ui in enumerate(u):
     monomial *= (yu[i]*ui)**power[i]
-  weak_poly = torch.from_numpy(sep_convolve(monomial, kernels, jacobian=jacobian))
+  weak_poly = torch.from_numpy(separable_convolve(monomial, kernels, jacobian=jacobian))
   weak_poly *= yxyt * np.prod(spacing)
   return weak_poly
 
-# Compute a weak trig term, <D_phi, cos(au+b)>
+# Compute a weak trig term, <D_phi, cos(freq*u + phase)>
 def compute_weak_trig(u, kernels, spacing, freq=1., phase=0., yxyt=1., jacobian=1.):
   trig = torch.cos(freq*u + phase)
-  weak_trig = torch.from_numpy(sep_convolve(trig, kernels, jacobian=jacobian))
+  weak_trig = torch.from_numpy(separable_convolve(trig, kernels, jacobian=jacobian))
   weak_trig *= yxyt * np.prod(spacing)
   return weak_trig
 
@@ -124,6 +124,12 @@ def add_noise(U, sigma_NR):
   epsilon = torch.normal(mean=0, std=sigma, size=U.shape, dtype=torch.float64)
   return U + epsilon
 
+# Add noise to a list of states
+def add_noise_to_states(states, noise):
+  if noise == 0:
+    return states
+  return [add_noise(ui, noise) for ui in states]
+
 # Augmented libraries
 def composite_term(columns, coeffs, name, model, lib_info):
   [G, powers, derivs, rhs_names] = lib_info
@@ -145,3 +151,18 @@ def composite_term(columns, coeffs, name, model, lib_info):
   derivs.append(None)
   rhs_names.append(name)
   return G, powers, derivs, rhs_names
+
+# Convert a SciPy ODE solution to a list of torch tensors
+def convert_to_torch(sol):
+  return [torch.tensor(ui, dtype=torch.float64) for ui in sol.y]
+
+# Plot (u1,...,ud)(t) time series data for ODE systems
+def plot_states_ode(t, states, names, title, ls='-', alpha=1):
+  plt.figure(figsize=(8,3))
+  for ui,name in zip(states,names):
+    plt.plot(t, ui, ls, alpha=alpha, label='$' + name + '(t)$')
+  plt.xlabel('$t$')
+  plt.title(title)
+  plt.grid(True, alpha=0.3, color='silver')
+  plt.legend(loc='upper left')
+  plt.show()
