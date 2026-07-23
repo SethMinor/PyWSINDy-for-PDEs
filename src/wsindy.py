@@ -423,7 +423,7 @@ class WSINDy:
 
   # Sweep hyperparameters (m, Lambda) with rescale = True/False
   def hyperparameter_sweep(self, lhs_name=None, m_values=None, Lambdas=None, rescales=(True, False),
-                           library_fcn=None, true_coeffs=None, csv_path=None, plot=True):
+                           library_fcn=None, true_coeffs=None, csv_path=None, plot=True, noise=None):
     if lhs_name is None:
       lhs_name = getattr(self, 'lhs_name', self.names[0] + self.derivative_names[0])
     if m_values is None:
@@ -442,7 +442,7 @@ class WSINDy:
       Lambdas = 10**((3/199)*torch.arange(0,200)-3)
     Lambdas = [float(Li) for Li in Lambdas]
 
-    keys = ['m','p','Lambda','rescale','model','terms','coeffs','sparsity','loss','R2','L2','rel_L2','cond_G']
+    keys = ['m','p','Lambda','rescale','model','terms','coeffs','sparsity','loss','R2','L2','rel_L2','cond_G','noise']
     if true_coeffs is not None:
       keys.extend(['coeff_error','support_error'])
     results = {key: [] for key in keys}
@@ -480,6 +480,11 @@ class WSINDy:
           results['rel_L2'].append((la.norm(r)/la.norm(model.lhs)).item())
           results['cond_G'].append(cond_G)
 
+          if noise is not None:
+            results['noise'].append(noise)
+          else:
+            results['noise'].append('unknown')
+
           # Max relative coefficient error
           if true_coeffs is not None:
             learned = dict(zip(results['terms'][-1], results['coeffs'][-1]))
@@ -495,11 +500,11 @@ class WSINDy:
         for i in range(len(results['Lambda'])):
           writer.writerow([results[key][i] for key in keys])
     if plot:
-      self.plot_sweep(results)
+      self.plot_sweep(results, noise=noise)
     return results
 
   # Heatmaps of hyperparameter sweep results over (m, Lambda)
-  def plot_sweep(self, results, metrics=None):
+  def plot_sweep(self, results, metrics=None, noise=None):
     if metrics is None:
       metrics = ('loss','L2','sparsity')
       metrics += tuple(metric for metric in ('coeff_error','support_error') if metric in results)
@@ -513,7 +518,7 @@ class WSINDy:
               'L2': r'$L^2$ error, $\log_{10}\|\mathbf{Gw}^{\lambda}-\mathbf{b}\|_2$',
               'sparsity': r'Nonzero terms, $\|\mathbf{w}\|_0$',
               'coeff_error': r'Coeff. error, $\log_{10}E_{\infty}$',
-              'support_error': 'Support error'}
+              'support_error': 'Support error (# indices)'}
 
     for rescale in rescales:
       nrows = 2 if len(metrics) > 4 else 1
@@ -560,7 +565,7 @@ class WSINDy:
                         np.pad(correct.astype(float), 1), levels=[0.5],
                         colors='black', linestyles='--', linewidths=1, zorder=3)
         if best is not None:
-          ax[j].plot(Lambdas[best[1]], m_ticks[best[0]], marker='*', color='black',
+          ax[j].plot(Lambdas[best[1]], m_ticks[best[0]], marker='*', color='goldenrod',
                      markersize=7, linestyle='none', zorder=4)
 
         ax[j].set_xscale('log')
@@ -573,12 +578,12 @@ class WSINDy:
         fig.colorbar(pcm, ax=ax[j], ticks=cbar_ticks)
       for extra_ax in ax[len(metrics):]:
         extra_ax.set_visible(False)
-      fig.suptitle(fr'$\mathbf{{w}}^{{\lambda}}=$MSTLS$(\mathbf{{G}},\mathbf{{b}},\lambda)$ (Rescaled: {rescale})')
-      legend_handles = ([Line2D([0],[0], color='black', linestyle='--', label='Correct model form')]
+      fig.suptitle(f'Rescaled: {rescale}, Noise: {noise}')
+      legend_handles = ([Line2D([0],[0], color='black', linestyle='--', label='Correct support')]
                         if support_Z is not None else [])
       if coeff_Z is not None:
-        legend_handles.append(Line2D([0],[0], color='black', marker='*', linestyle='none',
-                                     markersize=7, label='Smallest coefficient error'))
+        legend_handles.append(Line2D([0],[0], color='goldenrod', marker='*', linestyle='none',
+                                     markersize=7, label='Min. coeff. error (in support)'))
       if legend_handles:
         fig.legend(handles=legend_handles, loc='upper right', ncol=len(legend_handles))
       fig.tight_layout(rect=(0,0,1,0.9) if legend_handles else None)
