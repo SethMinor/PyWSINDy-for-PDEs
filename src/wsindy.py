@@ -444,7 +444,7 @@ class WSINDy:
 
     keys = ['m','p','Lambda','rescale','model','terms','coeffs','sparsity','loss','R2','L2','rel_L2','cond_G','noise']
     if true_coeffs is not None:
-      keys.extend(['coeff_error','support_error'])
+      keys.extend(['coeff_error','support_error','rel_sparsity'])
     results = {key: [] for key in keys}
 
     s = self.U.ndim * [1]
@@ -492,6 +492,7 @@ class WSINDy:
             results['coeff_error'].append(error)
             true_support = {name for name,wj in true_coeffs.items() if wj != 0}
             results['support_error'].append(len(set(learned) ^ true_support))
+            results['rel_sparsity'].append(len(nonzero) - len(true_support))
 
     if csv_path is not None:
       with open(csv_path, 'w', newline='') as file:
@@ -507,7 +508,7 @@ class WSINDy:
   def plot_sweep(self, results, metrics=None, noise=None):
     if metrics is None:
       metrics = ('loss','L2','sparsity')
-      metrics += tuple(metric for metric in ('coeff_error','support_error') if metric in results)
+      metrics += tuple(metric for metric in ('coeff_error','support_error','rel_sparsity') if metric in results)
 
     m_labels = list(dict.fromkeys(results['m']))
     Lambdas = list(dict.fromkeys(results['Lambda']))
@@ -518,7 +519,8 @@ class WSINDy:
               'L2': r'$L^2$ error, $\log_{10}\|\mathbf{Gw}^{\lambda}-\mathbf{b}\|_2$',
               'sparsity': r'Nonzero terms, $\|\mathbf{w}\|_0$',
               'coeff_error': r'Coeff. error, $\log_{10}E_{\infty}$',
-              'support_error': 'Support error (# indices)'}
+              'support_error': 'Support error (# indices)',
+              'rel_sparsity': r'Relative sparsity, $\|\mathbf{w}^{\lambda}\|_0-\|\mathbf{w}^{\star}\|_0$'}
 
     for rescale in rescales:
       nrows = 2 if len(metrics) > 4 else 1
@@ -531,10 +533,10 @@ class WSINDy:
       correct = support_Z == 0 if support_Z is not None else None
       coeff_Z = sweep_grid(results, 'coeff_error', rescale, m_labels, Lambdas, order) \
                 if 'coeff_error' in results else None
-      finite_coeffs = np.isfinite(coeff_Z) if coeff_Z is not None else None
+      finite_coeffs = np.isfinite(coeff_Z) & correct if coeff_Z is not None and correct is not None else None
       best = None
       if finite_coeffs is not None and finite_coeffs.any():
-        best = np.unravel_index(np.nanargmin(coeff_Z), coeff_Z.shape)
+        best = np.unravel_index(np.nanargmin(np.where(finite_coeffs, coeff_Z, np.nan)), coeff_Z.shape)
 
       for j,metric in enumerate(metrics):
         Z = sweep_grid(results, metric, rescale, m_labels, Lambdas, order)
@@ -552,8 +554,14 @@ class WSINDy:
           vmax = int(np.nanmax(Z))
           cbar_ticks = np.arange(vmax + 1)
           bounds = np.arange(-0.5, vmax + 1.5)
-          norm = BoundaryNorm(bounds, plt.get_cmap('Reds').N)
-          pcm = ax[j].pcolormesh(Lambdas, m_ticks, Z, cmap='Reds', norm=norm)
+          norm = BoundaryNorm(bounds, plt.get_cmap('bone_r').N)
+          pcm = ax[j].pcolormesh(Lambdas, m_ticks, Z, cmap='bone_r', norm=norm)
+        elif metric == 'rel_sparsity':
+          vmax = int(np.nanmax(np.abs(Z)))
+          cbar_ticks = np.arange(-vmax, vmax + 1)
+          bounds = np.arange(-vmax - 0.5, vmax + 1.5)
+          norm = BoundaryNorm(bounds, plt.get_cmap('coolwarm').N)
+          pcm = ax[j].pcolormesh(Lambdas, m_ticks, Z, cmap='PiYG', norm=norm)
         elif metric == 'coeff_error':
           Z = np.log10(np.maximum(Z, 1e-16))
           pcm = ax[j].pcolormesh(Lambdas, m_ticks, Z, cmap='coolwarm')
@@ -563,9 +571,9 @@ class WSINDy:
         if correct is not None and correct.any():
           ax[j].contour(pad_ticks(Lambdas, positive=True), pad_ticks(m_ticks),
                         np.pad(correct.astype(float), 1), levels=[0.5],
-                        colors='black', linestyles='--', linewidths=1, zorder=3)
+                        colors='darkgoldenrod', linestyles='--', linewidths=1, zorder=3)
         if best is not None:
-          ax[j].plot(Lambdas[best[1]], m_ticks[best[0]], marker='*', color='goldenrod',
+          ax[j].plot(Lambdas[best[1]], m_ticks[best[0]], marker='*', color='darkgoldenrod',
                      markersize=7, linestyle='none', zorder=4)
 
         ax[j].set_xscale('log')
@@ -579,10 +587,10 @@ class WSINDy:
       for extra_ax in ax[len(metrics):]:
         extra_ax.set_visible(False)
       fig.suptitle(f'Rescaled: {rescale}, Noise: {noise}')
-      legend_handles = ([Line2D([0],[0], color='black', linestyle='--', label='Correct support')]
+      legend_handles = ([Line2D([0],[0], color='darkgoldenrod', linestyle='--', label='Correct support')]
                         if support_Z is not None else [])
-      if coeff_Z is not None:
-        legend_handles.append(Line2D([0],[0], color='goldenrod', marker='*', linestyle='none',
+      if best is not None:
+        legend_handles.append(Line2D([0],[0], color='darkgoldenrod', marker='*', linestyle='none',
                                      markersize=7, label='Min. coeff. error (in support)'))
       if legend_handles:
         fig.legend(handles=legend_handles, loc='upper right', ncol=len(legend_handles))
