@@ -1,4 +1,5 @@
 # HELPER FUNCTIONS
+import ast
 import torch
 import scipy
 import numpy as np
@@ -166,3 +167,34 @@ def plot_states_ode(t, states, names, title, ls='-', alpha=1):
   plt.grid(True, alpha=0.3, color='silver')
   plt.legend(loc='upper left')
   plt.show()
+
+# For plotting hyperparameter sweeps
+def parse_m_labels(m_labels):
+  try:
+    m_values = [ast.literal_eval(label) for label in m_labels]
+  except (SyntaxError, ValueError):
+    m_values = None
+  if (m_values is not None) and all(len(set(np.atleast_1d(mi)))==1 for mi in m_values):
+    m_ticks = np.array([np.atleast_1d(mi)[0] for mi in m_values])
+    order = np.argsort(m_ticks)
+    return m_ticks[order], None, order
+  return np.arange(len(m_labels)), m_labels, np.arange(len(m_labels))
+
+# For plotting hyperparameter sweeps
+def sweep_grid(results, metric, rescale, m_labels, Lambdas, order):
+  Z = np.full((len(m_labels), len(Lambdas)), np.nan)
+  for i in range(len(results['Lambda'])):
+    if results['rescale'][i] == rescale:
+      Z[m_labels.index(results['m'][i]), Lambdas.index(results['Lambda'][i])] = results[metric][i]
+  return Z[order]
+
+# For plotting hyperparameter sweeps
+def pad_ticks(ticks, positive=False):
+  if len(ticks) > 1:
+    left, right = 2*ticks[0]-ticks[1], 2*ticks[-1]-ticks[-2]
+  else:
+    step = ticks[0]/2 if positive else 1
+    left, right = ticks[0]-step, ticks[0]+step
+  if positive and left <= 0:
+    left = ticks[0]/2
+  return np.r_[left, ticks, right]

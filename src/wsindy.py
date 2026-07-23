@@ -1,5 +1,7 @@
 from helper_fcns import *
 import csv
+from matplotlib.colors import BoundaryNorm
+from matplotlib.lines import Line2D
 
 class WSINDy:
   def __init__(self, U, alpha, beta, X, V=[], names=None, m=None, p=None, s=None, jacobian = 1.,
@@ -291,7 +293,7 @@ class WSINDy:
       yu = len(state) * [1.]
       yxyt = 1.
 
-    for i,ai in enumerate(tqdm(self.alpha[1:]), start=1):
+    for i,ai in enumerate(tqdm(self.alpha[1:], disable=not self.verbosity), start=1):
       kernel = self.kernels[i]
       for j,bj in enumerate(self.beta):
         if all(bjd==0 for bjd in bj) and any(aid!=0 for aid in ai):
@@ -426,8 +428,8 @@ class WSINDy:
       lhs_name = getattr(self, 'lhs_name', self.names[0] + self.derivative_names[0])
     if m_values is None:
       m_values = []
-      #for factor in [0.5, 0.75, 1.0, 1.25, 1.5]:
-      for factor in np.linspace(0.5, 1.5, 40):
+      #for factor in np.linspace(0.5, 1.5, 40):
+      for factor in np.linspace(0.5, 1.5, 60):
         m_new = [int(round(factor*mi)) for mi in self.m]
         m_new = [min(max(mi,2), (self.U.shape[i]-1)//2) for i,mi in enumerate(m_new)]
         if m_new not in m_values:
@@ -436,12 +438,13 @@ class WSINDy:
       m_values = [(self.U.ndim*[mi] if type(mi)==int else list(mi)) for mi in m_values]
     if Lambdas is None:
       #Lambdas = 10**((4/49)*torch.arange(0,50)-4)
-      Lambdas = 10**((4/199)*torch.arange(0,200)-4)
+      #Lambdas = 10**((4/199)*torch.arange(0,200)-4)
+      Lambdas = 10**((3/199)*torch.arange(0,200)-3)
     Lambdas = [float(Li) for Li in Lambdas]
 
-    keys = ['m','p','Lambda','rescale','model','terms','coeffs','sparsity','loss','R2','rel_L2','cond_G']
+    keys = ['m','p','Lambda','rescale','model','terms','coeffs','sparsity','loss','R2','L2','rel_L2','cond_G']
     if true_coeffs is not None:
-      keys.append('coeff_err')
+      keys.extend(['coeff_error','support_error'])
     results = {key: [] for key in keys}
 
     s = self.U.ndim * [1]
@@ -473,14 +476,17 @@ class WSINDy:
           results['sparsity'].append(len(nonzero))
           results['loss'].append(model.loss)
           results['R2'].append(R2.item())
+          results['L2'].append(la.norm(r).item())
           results['rel_L2'].append((la.norm(r)/la.norm(model.lhs)).item())
           results['cond_G'].append(cond_G)
 
           # Max relative coefficient error
           if true_coeffs is not None:
-            got = dict(zip(results['terms'][-1], results['coeffs'][-1]))
-            err = max(abs(got.get(name, 0.) - cj)/abs(cj) for name,cj in true_coeffs.items())
-            results['coeff_err'].append(err)
+            learned = dict(zip(results['terms'][-1], results['coeffs'][-1]))
+            error = max(abs(learned.get(name,0.) - wj)/abs(wj) for name,wj in true_coeffs.items())
+            results['coeff_error'].append(error)
+            true_support = {name for name,wj in true_coeffs.items() if wj != 0}
+            results['support_error'].append(len(set(learned) ^ true_support))
 
     if csv_path is not None:
       with open(csv_path, 'w', newline='') as file:
@@ -495,46 +501,86 @@ class WSINDy:
   # Heatmaps of hyperparameter sweep results over (m, Lambda)
   def plot_sweep(self, results, metrics=None):
     if metrics is None:
-      #metrics = ('sparsity', 'R2') + (('coeff_err',) if 'coeff_err' in results else ())
-      metrics = ('sparsity', 'R2', 'loss') + (('coeff_err',) if 'coeff_err' in results else ())
+      metrics = ('loss','L2','sparsity')
+      metrics += tuple(metric for metric in ('coeff_error','support_error') if metric in results)
 
     m_labels = list(dict.fromkeys(results['m']))
     Lambdas = list(dict.fromkeys(results['Lambda']))
     rescales = list(dict.fromkeys(results['rescale']))
-    titles = {'sparsity': r'Nonzero terms, $\|\mathbf{w}\|_0$',
+    [m_ticks, tick_labels, order] = parse_m_labels(m_labels)
+    titles = {'loss': r'MSTLS loss, $\log_{10}\mathcal{L}(\mathbf{w}^{\lambda})$',
               'R2': r'Equation fit, $R^2$',
-              'loss': r'WSINDyLoss, $\mathcal{L}(\mathbf{w})$',
-              'coeff_err': r'Coeff. Error, $\log_{10}(E_{\infty})$'}
+              'L2': r'$L^2$ error, $\log_{10}\|\mathbf{Gw}^{\lambda}-\mathbf{b}\|_2$',
+              'sparsity': r'Nonzero terms, $\|\mathbf{w}\|_0$',
+              'coeff_error': r'Coeff. error, $\log_{10}E_{\infty}$',
+              'support_error': 'Support error'}
 
     for rescale in rescales:
-      #fig, ax = plt.subplots(1, len(metrics), figsize=(5*len(metrics), 0.5*len(m_labels)+1.8))
-      fig, ax = plt.subplots(1, len(metrics), figsize=(4*len(metrics), 4), sharey=True)
-      ax = np.atleast_1d(ax)
+      nrows = 2 if len(metrics) > 4 else 1
+      ncols = int(np.ceil(len(metrics)/nrows))
+      fig, ax = plt.subplots(nrows, ncols, figsize=(4*ncols,4*nrows), sharex=True, sharey=True)
+      ax = np.atleast_1d(ax).flatten()
+
+      support_Z = sweep_grid(results, 'support_error', rescale, m_labels, Lambdas, order) \
+                  if 'support_error' in results else None
+      correct = support_Z == 0 if support_Z is not None else None
+      coeff_Z = sweep_grid(results, 'coeff_error', rescale, m_labels, Lambdas, order) \
+                if 'coeff_error' in results else None
+      finite_coeffs = np.isfinite(coeff_Z) if coeff_Z is not None else None
+      best = None
+      if finite_coeffs is not None and finite_coeffs.any():
+        best = np.unravel_index(np.nanargmin(coeff_Z), coeff_Z.shape)
+
       for j,metric in enumerate(metrics):
-        Z = np.full((len(m_labels), len(Lambdas)), np.nan)
+        Z = sweep_grid(results, metric, rescale, m_labels, Lambdas, order)
+        cbar_ticks = None
 
-        for i in range(len(results['Lambda'])):
-          if results['rescale'][i] == rescale:
-            Z[m_labels.index(results['m'][i]), Lambdas.index(results['Lambda'][i])] = results[metric][i]
-
-        if metric == 'R2':
-          pcm = ax[j].pcolormesh(Lambdas, range(len(m_labels)), Z, shading='nearest', cmap='Reds_r', vmin=0, vmax=1)
-        elif metric == 'coeff_err':
+        if metric == 'loss':
           Z = np.log10(np.maximum(Z, 1e-16))
-          pcm = ax[j].pcolormesh(Lambdas, range(len(m_labels)), Z, shading='nearest', cmap='Reds')
-        elif metric == 'loss':
-          pcm = ax[j].pcolormesh(Lambdas, range(len(m_labels)), Z, shading='nearest', cmap='Reds')
+          pcm = ax[j].pcolormesh(Lambdas, m_ticks, Z, cmap='coolwarm')
+        elif metric == 'R2':
+          pcm = ax[j].pcolormesh(Lambdas, m_ticks, Z, cmap='Reds_r', vmin=0, vmax=1)
+        elif metric == 'L2':
+          Z = np.log10(np.maximum(Z, 1e-16))
+          pcm = ax[j].pcolormesh(Lambdas, m_ticks, Z, cmap='coolwarm')
+        elif metric in ('sparsity','support_error'):
+          vmax = int(np.nanmax(Z))
+          cbar_ticks = np.arange(vmax + 1)
+          bounds = np.arange(-0.5, vmax + 1.5)
+          norm = BoundaryNorm(bounds, plt.get_cmap('Reds').N)
+          pcm = ax[j].pcolormesh(Lambdas, m_ticks, Z, cmap='Reds', norm=norm)
+        elif metric == 'coeff_error':
+          Z = np.log10(np.maximum(Z, 1e-16))
+          pcm = ax[j].pcolormesh(Lambdas, m_ticks, Z, cmap='coolwarm')
         else:
-          pcm = ax[j].pcolormesh(Lambdas, range(len(m_labels)), Z, shading='nearest', cmap='Reds')
+          pcm = ax[j].pcolormesh(Lambdas, m_ticks, Z, cmap='Reds')
+
+        if correct is not None and correct.any():
+          ax[j].contour(pad_ticks(Lambdas, positive=True), pad_ticks(m_ticks),
+                        np.pad(correct.astype(float), 1), levels=[0.5],
+                        colors='black', linestyles='--', linewidths=1, zorder=3)
+        if best is not None:
+          ax[j].plot(Lambdas[best[1]], m_ticks[best[0]], marker='*', color='black',
+                     markersize=7, linestyle='none', zorder=4)
 
         ax[j].set_xscale('log')
-        ax[j].set_yticks(range(len(m_labels)))
-        ax[j].set_yticklabels(m_labels, fontsize=7)
+        if tick_labels is not None:
+          ax[j].set_yticks(m_ticks)
+          ax[j].set_yticklabels(tick_labels, fontsize=7)
         ax[j].set_xlabel(r'$\lambda$')
         ax[j].set_ylabel('$m$')
         ax[j].set_title(titles.get(metric, metric))
-        fig.colorbar(pcm, ax=ax[j])
-      fig.suptitle(f'rescale = {rescale}')
-      fig.tight_layout()
+        fig.colorbar(pcm, ax=ax[j], ticks=cbar_ticks)
+      for extra_ax in ax[len(metrics):]:
+        extra_ax.set_visible(False)
+      fig.suptitle(fr'$\mathbf{{w}}^{{\lambda}}=$MSTLS$(\mathbf{{G}},\mathbf{{b}},\lambda)$ (Rescaled: {rescale})')
+      legend_handles = ([Line2D([0],[0], color='black', linestyle='--', label='Correct model form')]
+                        if support_Z is not None else [])
+      if coeff_Z is not None:
+        legend_handles.append(Line2D([0],[0], color='black', marker='*', linestyle='none',
+                                     markersize=7, label='Smallest coefficient error'))
+      if legend_handles:
+        fig.legend(handles=legend_handles, loc='upper right', ncol=len(legend_handles))
+      fig.tight_layout(rect=(0,0,1,0.9) if legend_handles else None)
       plt.show()
     return
