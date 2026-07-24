@@ -517,7 +517,7 @@ class WSINDy:
     titles = {'loss': r'MSTLS loss, $\log_{10}\mathcal{L}(\mathbf{w}^{\lambda})$',
               'R2': r'Equation fit, $R^2$',
               'L2': r'$L^2$ error, $\log_{10}\|\mathbf{Gw}^{\lambda}-\mathbf{b}\|_2$',
-              'sparsity': r'Nonzero terms, $\|\mathbf{w}\|_0$',
+              'sparsity': r'Nonzero terms, $\|\mathbf{w}^{\lambda}\|_0$',
               'coeff_error': r'Coeff. error, $\log_{10}E_{\infty}$',
               'support_error': 'Support error (# indices)',
               'rel_sparsity': r'Relative sparsity, $\|\mathbf{w}^{\lambda}\|_0-\|\mathbf{w}^{\star}\|_0$'}
