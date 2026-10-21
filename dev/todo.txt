@@ -1,0 +1,9 @@
+- update readme with improved documentation and pics
+
+- add "open in colab" banner
+
+- add bayesian MSTLS thing for selecting zero model
+
+- add ability to name spatial axes
+
+- add "helper"/list of wsindy fcn calls/attributes (?)

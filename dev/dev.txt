@@ -1,0 +1,16 @@
+- added ability to do ODE and PDE with same code
+-- 'equation_type' attribute ('ode' or 'pde')
+
+- added tests for development
+
+- added functionality for hyperparameter sweeps
+
+- added ability for MSTLS select the zero model
+
+- added ability to name spatial axes
+
+- update readme with improved documentation and pics
+
+- added doc-strings
+
+- renamed stuff (more self-explanatory)???

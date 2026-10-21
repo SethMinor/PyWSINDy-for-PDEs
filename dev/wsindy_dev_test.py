@@ -10,7 +10,7 @@ import torch
 import numpy as np
 from scipy.integrate import solve_ivp
 
-from wsindy_ode_pde import *
+from wsindy_dev import *
 
 torch.set_default_dtype(torch.float64)
 

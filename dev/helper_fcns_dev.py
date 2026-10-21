@@ -22,13 +22,6 @@ def F_root(m,k,N,tau_hat,tau):
   last_term = 2*(tau_hat*N)**2 * np.log(tau)
   return log_term * mid_term - last_term
 
-# Compute test function degrees given support radii
-def compute_degrees(d, m, alpha, tau=1.e-10):
-  alpha_bar = max(tuple(item[d] for item in alpha))
-  log_tau_term = np.ceil(np.log(tau)/np.log((2*m-1)/m**2))
-  p = int(max(log_tau_term, alpha_bar + 1))
-  return p
-
 # Indices of query points along a single axis
 def subsample(s, m, x):
   if (2*m + 1) > x.shape[0]:
@@ -56,8 +49,8 @@ def D_phibar(x, D, x_sym, phi_bar):
     return 0.
 
 # FFT-base convolution with separable kernel
-def sep_convolve(u, kernels, jacobian=1.):
-  conv = jacobian * u.clone()
+def sep_convolve(u, kernels, volume_element=1.):
+  conv = volume_element * u.clone()
   for i, Ki in enumerate(kernels):
     shape = u.ndim * [1]
     shape[i] = -1
@@ -65,26 +58,26 @@ def sep_convolve(u, kernels, jacobian=1.):
   return conv
 
 # Compute a weak polynomial term, <D_phi, u^power>
-def compute_weak_poly(u, kernels, spacing, power=1., yu=1., yxyt=1., jacobian=1.):
-  weak_poly = torch.from_numpy(sep_convolve((yu*u)**power, kernels, jacobian=jacobian))
-  weak_poly *= yxyt * np.prod(spacing)
+def compute_weak_poly(u, kernels, spacing, power=1., u_scale=1., scales_product=1., volume_element=1.):
+  weak_poly = torch.from_numpy(sep_convolve((u_scale*u)**power, kernels, volume_element=volume_element))
+  weak_poly *= scales_product * np.prod(spacing)
   return weak_poly
 
 # Weak multivariable polynomial term, <D_phi, u1^p1 * ... * un^pn>
-def compute_weak_multipoly(u, kernels, spacing, power=[1.], yu=[1.], yxyt=1., jacobian=1.):
-  assert type(u) == type(power) == type(yu) == list, "Must provide a list."
+def compute_weak_multipoly(u, kernels, spacing, power=[1.], u_scale=[1.], scales_product=1., volume_element=1.):
+  assert type(u) == type(power) == type(u_scale) == list, "Must provide a list."
   monomial = 1
   for i,ui in enumerate(u):
-    monomial *= (yu[i]*ui)**power[i]
-  weak_poly = torch.from_numpy(sep_convolve(monomial, kernels, jacobian=jacobian))
-  weak_poly *= yxyt * np.prod(spacing)
+    monomial *= (u_scale[i]*ui)**power[i]
+  weak_poly = torch.from_numpy(sep_convolve(monomial, kernels, volume_element=volume_element))
+  weak_poly *= scales_product * np.prod(spacing)
   return weak_poly
 
 # Compute a weak trig term, <D_phi, cos(au+b)>
-def compute_weak_trig(u, kernels, spacing, freq=1., phase=0., yxyt=1., jacobian=1.):
+def compute_weak_trig(u, kernels, spacing, freq=1., phase=0., scales_product=1., volume_element=1.):
   trig = torch.cos(freq*u + phase)
-  weak_trig = torch.from_numpy(sep_convolve(trig, kernels, jacobian=jacobian))
-  weak_trig *= yxyt * np.prod(spacing)
+  weak_trig = torch.from_numpy(sep_convolve(trig, kernels, volume_element=volume_element))
+  weak_trig *= scales_product * np.prod(spacing)
   return weak_trig
 
 # Computes loss for a given candidate threshold
