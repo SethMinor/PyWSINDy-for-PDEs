@@ -1,16 +1,27 @@
-- added ability to do ODE and PDE with same code
+- added ability to do ODE and PDE with same codebase
 -- 'equation_type' attribute ('ode' or 'pde')
 
-- added tests for development
+- added unit tests for verifying future code development
+-- wsindy.test.py
+
+- added benchmarking with the "dysts" dataset
 
 - added functionality for hyperparameter sweeps
+-- "hyperparameter_sweep" method
+-- "plot_sweep_results" method
 
 - added ability for MSTLS select the zero model
 
 - added ability to name spatial axes
+-- "self.grid_axis_names" attribute
 
 - update readme with improved documentation and pics
 
-- added doc-strings
+- added doc-strings to "WSINDy" methods
 
-- renamed stuff (more self-explanatory)???
+- renamed variables (less math notation, more self-explanatory)
+
+- added printable of wsindy attributes/fcn calls for easy reference
+-- see "WSINDY.help" method
+
+- updated "verbose" plotting

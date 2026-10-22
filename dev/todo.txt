@@ -4,6 +4,11 @@
 
 - add bayesian MSTLS thing for selecting zero model
 
-- add ability to name spatial axes
-
 - add "helper"/list of wsindy fcn calls/attributes (?)
+
+- add dysts benchmarking
+
+- get swift hohenberg and jhtdb data
+-- copy over notebook cells
+
+- change 'u_{t}' to '\dot{u}' for ODEs (???)
