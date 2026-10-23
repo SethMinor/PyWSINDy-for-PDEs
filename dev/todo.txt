@@ -1,6 +1,6 @@
 - update readme with improved documentation and pics
 
-- add "open in colab" banner
+- add "open in colab" banner for github
 
 - add bayesian MSTLS thing for selecting zero model
 
@@ -10,5 +10,4 @@
 
 - get swift hohenberg and jhtdb data
 -- copy over notebook cells
-
-- change 'u_{t}' to '\dot{u}' for ODEs (???)
+-- compress SH23.txt file (?)

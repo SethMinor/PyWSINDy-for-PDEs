@@ -1,0 +1,528 @@
+<?xml version="1.0" ?>
+<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>
+<Xdmf Version="2.0">
+  <Domain>
+    <Grid Name="velocity" GridType="Collection" CollectionType="Temporal">
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="1"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0001
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="41"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0041
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="81"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0081
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="121"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0121
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="161"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0161
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="201"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0201
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="241"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0241
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="281"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0281
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="321"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0321
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="361"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0361
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="401"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0401
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="441"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0441
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="481"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0481
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="521"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0521
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="561"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0561
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="601"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0601
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="641"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0641
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="681"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0681
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="721"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0721
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="761"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0761
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="801"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0801
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="841"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0841
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="881"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0881
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="921"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0921
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="961"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_0961
+          </DataItem>
+        </Attribute>
+      </Grid>
+      <Grid Name="Structured Grid" GridType="Uniform">
+        <Time Value="1001"/>
+        <Topology TopologyType="3DRectMesh" NumberOfElements="128 128 128"/>
+        <Geometry GeometryType="VXVYVZ">
+          <DataItem Name="Xcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/xcoor
+          </DataItem>
+          <DataItem Name="Ycoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/ycoor
+          </DataItem>
+          <DataItem Name="Zcoor" Dimensions="128" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/zcoor
+          </DataItem>
+        </Geometry>
+        <Attribute Name="velocity" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="128 128 128 3" NumberType="Float" Precision="4" Format="HDF">
+            mhd1024_velocity.h5:/velocity_1001
+          </DataItem>
+        </Attribute>
+      </Grid>
+    </Grid>
+  </Domain>
+</Xdmf>

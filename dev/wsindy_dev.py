@@ -311,10 +311,17 @@ class WSINDy:
           plt.plot(support_radius*dx*support_grid_d, test_fcns_d[i,:], '-', label=label)
         
         # Check if test function is the same as the previous one
-        elif multi_index_d[i] != multi_index_d[i-1]:
-          label = fr'$\frac{{d^{i}}}{{d{axis}^{i}}} \phi_{axis}({axis}_k - {axis})$'
+        elif i <= 4 and multi_index_d[i] != multi_index_d[i-1]:
+          if i < 4:
+            label = fr'$\frac{{d^{i}}}{{d{axis}^{i}}} \phi_{axis}({axis}_k - {axis})$'
+          else:
+            label = r'$\dots$'
           plt.plot(support_radius*dx*support_grid_d, test_fcns_d[i,:], '--', label=label)
-
+        
+        # After four test functions, the legend get too crowded
+        elif i > 4 and multi_index_d[i] != multi_index_d[i-1]:
+          plt.plot(support_radius*dx*support_grid_d, test_fcns_d[i,:], '--')
+        
       plt.title(f'Test functions (${axis}$-axis)')
       plt.xlabel(fr'${axis}_k - {axis}$')
       plt.grid(True, color='gray', alpha=0.2)
@@ -380,7 +387,7 @@ class WSINDy:
     else:
       lhs = compute_weak_poly(self.U, kernel, self.spacing, volume_element=self.volume_element)
     b = lhs[self.conv_mask]
-    self.lhs_name = self.var_names[0] + self.derivative_names[0]
+    self.lhs_name = self.format_lhs_name()
     self.lhs = b
     return
 
@@ -496,6 +503,17 @@ class WSINDy:
         derivative_names.append('_{' + ''.join(names[d]*elem[d] for d in order) + '}')
     return derivative_names
 
+  def format_lhs_name(self):
+    """
+    Symbolic string for the LHS evolution operator (dot notation for ODEs).
+    """
+    name = self.var_names[0]
+    order = self.derivatives[0][-1] # time derivative order
+    if self.equation_type == 'ode' and order > 0:
+      dots = {1: r'\dot', 2: r'\ddot', 3: r'\dddot', 4: r'\ddddot'}
+      return f'{dots[order]}{{{name}}}' if order in dots else f'{name}^{{({order})}}'
+    return name + self.derivative_names[0]
+
   def format_monomial(self, monomial_index_j):
     """
     Symbolic string formatting for monomial terms in the library.
@@ -552,6 +570,21 @@ class WSINDy:
     print(f'Relative L2 error = {la.norm(r)/la.norm(self.lhs):.2f}')
     return
 
+  def help_attributes(self):
+    """
+    Prints a help message with all the class attributes and their descriptions.
+    """
+
+  def help_methods(self):
+    """
+    Prints a help message with all the class methods and their descriptions.
+    """
+
+  def help(self):
+    """
+    Calls both "help_attributes" and "help_methods".
+    """
+
   #################################################################################################################
   # HYPERPARAMETER SWEEPS
   #################################################################################################################
@@ -563,7 +596,7 @@ class WSINDy:
     """
     # Set evolution operator name
     if lhs_name is None:
-      lhs_name = getattr(self, 'lhs_name', self.var_names[0] + self.derivative_names[0])
+      lhs_name = getattr(self, 'lhs_name', self.format_lhs_name())
     
     # Set support radii to sweep over
     if support_radii is None:

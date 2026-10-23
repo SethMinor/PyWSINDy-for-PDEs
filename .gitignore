@@ -1,2 +1,8 @@
 __pycache__/
 *.py[cod]
+
+# personal JHTDB authorization token (never commit)
+jhtdb_auth_token.txt
+
+# JHTDB cutout downloads (too large for GitHub; regenerate with Datasets/MHD/DEMO_Getcutout_local.ipynb)
+Datasets/MHD/giverny_output/*.h5
