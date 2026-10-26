@@ -112,10 +112,13 @@ def compute_residuals(G, w, b):
 
 # Add noise
 def add_noise(U, sigma_NR):
-  U_rms = (torch.sqrt((U**2).mean())).item();
-  sigma = sigma_NR * U_rms
-  epsilon = torch.normal(mean=0, std=sigma, size=U.shape, dtype=torch.float64)
-  return U + epsilon
+  if sigma_NR == 0:
+    return U
+  else:
+    U_rms = (torch.sqrt((U**2).mean())).item();
+    sigma = sigma_NR * U_rms
+    epsilon = torch.normal(mean=0, std=sigma, size=U.shape, dtype=torch.float64)
+    return U + epsilon
 
 # Augmented libraries
 def composite_term(columns, coeffs, name, model, lib_info):

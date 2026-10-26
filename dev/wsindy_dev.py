@@ -402,7 +402,7 @@ class WSINDy:
       u_scale = len(state) * [1.]
       scales_product = 1.
 
-    for i,deriv_index_i in enumerate(tqdm(self.derivatives[1:]), start=1):
+    for i,deriv_index_i in enumerate(tqdm(self.derivatives[1:], disable=not self.verbosity), start=1):
       kernel = self.test_fcn_kernels[i]
       for j,monomial_index_j in enumerate(self.monomials):
         if all(monomial_index_j_d==0 for monomial_index_j_d in monomial_index_j) \
@@ -601,7 +601,7 @@ class WSINDy:
     # Set support radii to sweep over
     if support_radii is None:
       support_radii = []
-      for mult_factor in np.linspace(0.5, 1.5, 60):
+      for mult_factor in np.linspace(0.5, 1.5, 61):
         radii = [int(round(mult_factor*mi)) for mi in self.test_fcn_support_radii]
         radii = [min(max(mi,2), (self.U.shape[i]-1)//2) for i,mi in enumerate(radii)]
         if radii not in support_radii:
@@ -611,7 +611,6 @@ class WSINDy:
     
     # Set MSTLS thresholds to sweep over
     if Lambdas is None:
-      #Lambdas = 10**((4/49)*torch.arange(0,50)-4)
       Lambdas = 10**((3/199)*torch.arange(0,200)-3)
     Lambdas = [float(Li) for Li in Lambdas]
 
@@ -694,7 +693,7 @@ class WSINDy:
           writer.writerow([results[key][i] for key in metrics])
 
     if plot:
-      self.plot_sweep_results(results)
+      self.plot_sweep_results(results, noise=noise)
     return results
 
   def plot_sweep_results(self, results, metrics=None, noise=None):
@@ -705,20 +704,8 @@ class WSINDy:
       metrics = ('loss','L2','sparsity')
       metrics += tuple(metric for metric in ('coeff_error','support_error','rel_sparsity') if metric in results)
 
-    radii_labels = list(dict.fromkeys(results['m']))
-    Lambdas = list(dict.fromkeys(results['Lambda']))
-    rescales = list(dict.fromkeys(results['rescale']))
-    [radii_ticks, tick_labels, order] = parse_m_labels(radii_labels)
-    titles = {'loss': r'MSTLS loss, $\log_{10}\mathcal{L}(\mathbf{w}^{\lambda})$',
-              'R2': r'Equation fit, $R^2$',
-              'L2': r'$L^2$ error, $\log_{10}\|\mathbf{Gw}^{\lambda}-\mathbf{b}\|_2$',
-              'sparsity': r'Nonzero terms, $\|\mathbf{w}^{\lambda}\|_0$',
-              'coeff_error': r'Coeff. error, $\log_{10}E_{\infty}$',
-              'support_error': 'Support error (# indices)',
-              'rel_sparsity': r'Relative sparsity, $\|\mathbf{w}^{\lambda}\|_0-\|\mathbf{w}^{\star}\|_0$'}
-    
     # Some helper functions for plotting
-    def parse_m_labels(radii_labels):
+    def parse_radii_labels(radii_labels):
       try:
         radii = [ast.literal_eval(label) for label in radii_labels]
       except (SyntaxError, ValueError):
@@ -745,6 +732,22 @@ class WSINDy:
       if positive and left <= 0:
         left = ticks[0]/2
       return np.r_[left, ticks, right]
+
+    radii_labels = list(dict.fromkeys(results['test_fcn_support_radii']))
+    Lambdas = list(dict.fromkeys(results['Lambda']))
+    rescales = list(dict.fromkeys(results['rescale']))
+    [radii_ticks, tick_labels, order] = parse_radii_labels(radii_labels)
+    # WSINDy-picked (m, Lambda) from spectral matching + MSTLS on the calling model
+    picked_label = str(self.test_fcn_support_radii)
+    picked_m = radii_ticks[list(order).index(radii_labels.index(picked_label))] \
+               if (picked_label in radii_labels) and hasattr(self, 'Lambda') else None
+    titles = {'loss': r'MSTLS loss, $\log_{10}\mathcal{L}(\mathbf{w}^{\lambda})$',
+              'R2': r'Equation fit, $R^2$',
+              'L2': r'$L^2$ error, $\log_{10}\|\mathbf{Gw}^{\lambda}-\mathbf{b}\|_2$',
+              'sparsity': r'Nonzero terms, $\|\mathbf{w}^{\lambda}\|_0$',
+              'coeff_error': r'Coeff. error, $\log_{10}E_{\infty}$',
+              'support_error': 'Support error (# indices)',
+              'rel_sparsity': r'Relative sparsity, $\|\mathbf{w}^{\lambda}\|_0-\|\mathbf{w}^{\star}\|_0$'}
 
     # PLOT THIS PUPPY
     for rescale in rescales:
@@ -800,6 +803,9 @@ class WSINDy:
         if best is not None:
           ax[j].plot(Lambdas[best[1]], radii_ticks[best[0]], marker='*', color='darkgoldenrod',
                      markersize=7, linestyle='none', zorder=4)
+        if picked_m is not None and rescale == self.rescale:
+          ax[j].plot(self.Lambda, picked_m, marker='*', mfc='none', mec='k', markersize=7,
+                     linestyle='none', zorder=4)
 
         ax[j].set_xscale('log')
         if tick_labels is not None:
@@ -817,8 +823,11 @@ class WSINDy:
       if best is not None:
         legend_handles.append(Line2D([0],[0], color='darkgoldenrod', marker='*', linestyle='none',
                                      markersize=7, label='Min. coeff. error (in support)'))
+      if picked_m is not None and rescale == self.rescale:
+        legend_handles.append(Line2D([0],[0], marker='*', mfc='none', mec='k', linestyle='none',
+                                     markersize=7, label='Default'))
       if legend_handles:
-        fig.legend(handles=legend_handles, loc='upper right', ncol=len(legend_handles))
+        fig.legend(handles=legend_handles, loc='upper right', ncol=len(legend_handles), fontsize=9)
       fig.tight_layout(rect=(0,0,1,0.9) if legend_handles else None)
       plt.show()
     return
