@@ -9,6 +9,9 @@ from matplotlib.lines import Line2D
 # for print help methods
 import inspect
 
+# for parallelization
+from concurrent.futures import ThreadPoolExecutor
+
 class WSINDy:
   def __init__(self,
                 U,
@@ -419,6 +422,8 @@ class WSINDy:
   def create_default_library(self):
     [G, powers, derivs, rhs_names] = [],[],[],[]
     state = [self.U] + self.aux_vars
+
+    # Optionally, rescale
     if self.rescale:
       u_scale = [self.u_scale] + self.aux_scales
       scales_product = np.prod(self.x_scales + [self.t_scale])
@@ -441,6 +446,53 @@ class WSINDy:
           name = self.format_monomial(monomial_index_j) + self.derivative_names[i]
           G.append(term[self.conv_mask])
           rhs_names.append(name)
+    return G, powers, derivs, rhs_names
+
+  # ATTEMPT AT A PARALLELIZED VERSION
+  #for i,deriv_index_i in enumerate(tqdm(self.derivatives[1:], disable=not self.verbosity), start=1):
+  def create_default_library_parallel(self, num_threads=None):
+    #[G, powers, derivs, rhs_names] = [],[],[],[]
+    [tasks, powers, derivs, rhs_names] = [],[],[],[]
+    state = [self.U] + self.aux_vars
+
+    # Optionally, rescale
+    if self.rescale:
+      u_scale = [self.u_scale] + self.aux_scales
+      scales_product = np.prod(self.x_scales + [self.t_scale])
+    else:
+      u_scale = len(state) * [1.]
+      scales_product = 1.
+
+    # Main loop to parallelize
+    for i,deriv_index_i in enumerate(self.derivatives[1:], start=1):
+      kernel = self.test_fcn_kernels[i]
+      for j,monomial_index_j in enumerate(self.monomials):
+        if all(monomial_index_j_d==0 for monomial_index_j_d in monomial_index_j) \
+          and any(deriv_index_i_d!=0 for deriv_index_i_d in deriv_index_i):
+          continue # Avoid derivatives of constant terms
+        assert (len(monomial_index_j)-1) == len(self.aux_vars), "Inconsistent number of powers!"
+        derivs.append(i)
+        powers.append(monomial_index_j)
+        #term = compute_weak_multipoly(state, kernel, self.spacing, power=monomial_index_j, u_scale=u_scale, \
+        #  scales_product=scales_product, volume_element=self.volume_element)
+        rhs_names.append(self.format_monomial(monomial_index_j) + self.derivative_names[i])
+        #G.append(term[self.conv_mask])
+        #rhs_names.append(name)
+        tasks.append((i, monomial_index_j))
+
+    # Single column task
+    def compute_column(task):
+      i, monomial_index_j = task
+      kernel = self.test_fcn_kernels[i]
+      term = compute_weak_multipoly(state, self.test_fcn_kernels[i], self.spacing, power=monomial_index_j, \
+        u_scale=u_scale, scales_product=scales_product, volume_element=self.volume_element)
+      return term[self.conv_mask]
+    
+    # vroooooom parallel time
+    if num_threads is None:
+      num_threads = torch.get_num_threads()
+    with ThreadPoolExecutor(max_workers=num_threads, initializer=torch.set_num_threads, initargs=(1,)) as executor:
+      G = list(tqdm(executor.map(compute_column, tasks), total=len(tasks), disable=not self.verbosity))
     return G, powers, derivs, rhs_names
 
   def set_library(self, G, powers, derivs, rhs_names):
