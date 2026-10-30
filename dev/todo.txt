@@ -13,7 +13,3 @@
 -- compress SH23.txt file (?)
 
 - add links to examples in notebook
-
-- note rescaling observation in hyperparam sweep plots
-
-- add auto-picked (m,lambda) values in hyperparam sweep plots (???)

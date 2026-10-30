@@ -6,26 +6,50 @@ import ast
 from matplotlib.colors import BoundaryNorm
 from matplotlib.lines import Line2D
 
+# for print help methods
+import inspect
+
 class WSINDy:
   def __init__(self,
-                U, # ............................................... State variable data (N_x x ... x N_t tensor)
-                derivatives, # ....................... Derivative operators to include in library (multi-indices)
-                monomials, # ..................... Candidate monomial terms to include in library (multi-indices)
-                grid, # ............................. The dsicretized space-time grid (list of vectors [x,...,t])
-                aux_vars = [], # ......................... Auxilliary variable(s) (list of tensors [V_1,V_2,...])
-                equation_type = "pde", # .................................................. Either "ode" or "pde"
-                volume_element = 1., # .................... Volume element of the space-time grid (dx * ... * dt)
-                var_names = None, # .............. Names of state/aux variables (list of strings ['U','V_1',...])
-                grid_axis_names = None, # .......... Names of spatiotemporal axes (list of strings ['x',...,'t'])
-                rescale = True, # ...................... Controls whether scale-invariant preconditioning is used
-                verbosity = True, # ...................... Controls whether additional plots and info are printed
-                subsample_rate = None, # .............. Spacing between query points (list of ints [s_x,...,s_t])
-                test_fcn_support_radii = None, # ............... Support grid widths (list of ints [m_x,...,m_t])
-                test_fcn_poly_degrees = None, # ....... 1/2 of test fcn poly degrees (list of ints [p_x,...,p_t])
-                test_fcn_support_tol = 1e-10, # ......... Tolerance for test fcn magnitude at boundary of support
-                test_fcn_spectrum_decay = 2, # ............. Spectral matching parameter (decay rate of spectrum)
-                changepoint_guess = [10,1,10,0], # ...... For spectral matching changepoint [x,y,slope_1,slope_2]
+                U,
+                derivatives,
+                monomials,
+                grid,
+                aux_vars = [],
+                equation_type = "pde",
+                volume_element = 1.,
+                var_names = None,
+                grid_axis_names = None,
+                rescale = True,
+                verbosity = True,
+                subsample_rate = None,
+                test_fcn_support_radii = None,
+                test_fcn_poly_degrees = None,
+                test_fcn_support_tol = 1e-10,
+                test_fcn_spectrum_decay = 2,
+                changepoint_guess = [10,1,10,0],
               ):
+
+    # List of WSINDy class attributes with short descriptions
+    self.attributes = {
+      'U': 'State variable data (N_x x ... x N_t tensor)',
+      'derivatives': 'Derivative operators to include in library (multi-indices)',
+      'monomials': 'Candidate monomial terms to include in library (multi-indices)',
+      'grid': 'The dsicretized space-time grid (list of vectors [x,...,t])',
+      'aux_vars': 'Auxilliary variable(s) (list of tensors [V_1,V_2,...])',
+      'equation_type': 'Either "ode" or "pde"',
+      'volume_element': 'Volume element of the space-time grid (dx * ... * dt)',
+      'var_names': 'Names of state/aux variables (list of strings ["U","V_1",...])',
+      'grid_axis_names': 'Names of spatiotemporal axes (list of strings ["x",...,"t"])',
+      'rescale': 'Controls whether scale-invariant preconditioning is used',
+      'verbosity': 'Controls whether additional plots and info are printed',
+      'subsample_rate': 'Spacing between query points (list of ints [s_x,...,s_t])',
+      'test_fcn_support_radii': 'Support grid widths (list of ints [m_x,...,m_t])',
+      'test_fcn_poly_degrees': '1/2 of test fcn poly degrees (list of ints [p_x,...,p_t])',
+      'test_fcn_support_tol': 'Tolerance for test fcn magnitude at boundary of support',
+      'test_fcn_spectrum_decay': 'Spectral matching parameter (decay rate of spectrum)',
+      'changepoint_guess': 'For spectral matching changepoint [x,y,slope_1,slope_2]',
+    }
 
     self.U = U
     self.derivatives = derivatives
@@ -574,16 +598,34 @@ class WSINDy:
     """
     Prints a help message with all the class attributes and their descriptions.
     """
+    for name, desc in self.attributes.items():
+      if not hasattr(self, name):
+        info = 'not set yet...'
+      elif torch.is_tensor(getattr(self, name)):
+        info = f'tensor {tuple(getattr(self, name).shape)}'
+      else:
+        info = type(getattr(self, name)).__name__
+      print(f'{name:<24} [{info}] {desc}')
 
   def help_methods(self):
     """
     Prints a help message with all the class methods and their descriptions.
     """
+    methods = inspect.getmembers(type(self), predicate=inspect.isfunction)
+    methods.sort(key=lambda m: inspect.getsourcelines(m[1])[1])
+    for name, fcn in methods:
+      if name.startswith('_') or name.startswith('help'):
+        continue
+      doc = inspect.getdoc(fcn) or '(no description)'
+      print(f'{name}()\n  ' + doc.replace('\n', '\n  ') + '\n')
 
   def help(self):
     """
     Calls both "help_attributes" and "help_methods".
     """
+    self.help_attributes()
+    self.help_methods()
+    return
 
   #################################################################################################################
   # HYPERPARAMETER SWEEPS
