@@ -1,15 +1,11 @@
-- update readme with improved documentation and pics
+- add "print_library_string" class method (?)
 
-- add "open in colab" banner for github
-
-- add bayesian MSTLS thing for selecting zero model
-
-- add "helper"/list of wsindy fcn calls/attributes (?)
+- add unit testing
 
 - add dysts benchmarking
 
-- get swift hohenberg and jhtdb data
--- copy over notebook cells
--- compress SH23.txt file (?)
+- add bayesian MSTLS method for selecting zero model
 
-- add links to examples in notebook
+- update readme with improved documentation and pics
+-- also add "open in colab" banner for github (?)
+-- figure out license

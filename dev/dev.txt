@@ -1,4 +1,4 @@
-- added ability to do ODE and PDE with same codebase
+- added ability to do ODE and PDE modeling with same codebase
 -- 'equation_type' attribute ('ode' or 'pde')
 
 - added functionality for hyperparameter sweeps
@@ -6,18 +6,18 @@
 -- "plot_sweep_results" method
 
 - added printable of wsindy attributes/fcn calls for easy reference
--- see the "help" method (includes "help_attributes" and "help_methods")
+-- see the "help" method (includes help_attributes" and "help_methods")
 
 - added doc-strings to "WSINDy" methods
 
 - renamed variables (less math notation, more self-explanatory)
 
 - added ability to name spatial axes
--- (see "self.grid_axis_names" attribute)
+-- see "self.grid_axis_names" attribute
 
-- updated plotting for "verbosity=True"
+- aesthetic updates to plots produced from "verbosity=True"
 
----------------------------------------------------
+---------------------------------------------------------------------------------
 STILL IN DEVELOPMENT
 
 - added unit tests for verifying future code development
