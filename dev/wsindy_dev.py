@@ -9,6 +9,9 @@ from matplotlib.lines import Line2D
 # for print help methods
 import inspect
 
+# for LaTeX rendering
+from IPython.display import display, Math
+
 class WSINDy:
   def __init__(self,
                 U,
@@ -35,20 +38,20 @@ class WSINDy:
       'U': 'State variable data (N_x x ... x N_t tensor)',
       'derivatives': 'Derivative operators to include in library (multi-indices)',
       'monomials': 'Candidate monomial terms to include in library (multi-indices)',
-      'grid': 'The dsicretized space-time grid (list of vectors [x,...,t])',
-      'aux_vars': 'Auxilliary variable(s) (list of tensors [V_1,V_2,...])',
+      'grid': 'The dsicretized space-time grid (list of vectors [x, ..., t])',
+      'aux_vars': 'Auxilliary variable(s) (list of tensors [V_1, V_2, ...])',
       'equation_type': 'Either "ode" or "pde"',
       'volume_element': 'Volume element of the space-time grid (dx * ... * dt)',
-      'var_names': 'Names of state/aux variables (list of strings ["U","V_1",...])',
-      'grid_axis_names': 'Names of spatiotemporal axes (list of strings ["x",...,"t"])',
+      'var_names': 'Names of state/aux variables (list of strings ["U", "V_1", ...])',
+      'grid_axis_names': 'Names of spatiotemporal axes (list of strings ["x", ..., "t"])',
       'rescale': 'Controls whether scale-invariant preconditioning is used',
       'verbosity': 'Controls whether additional plots and info are printed',
-      'subsample_rate': 'Spacing between query points (list of ints [s_x,...,s_t])',
-      'test_fcn_support_radii': 'Support grid widths (list of ints [m_x,...,m_t])',
-      'test_fcn_poly_degrees': '1/2 of test fcn poly degrees (list of ints [p_x,...,p_t])',
+      'subsample_rate': 'Spacing between query points (list of ints [s_x, ..., s_t])',
+      'test_fcn_support_radii': 'Support grid widths (list of ints [m_x, ..., m_t])',
+      'test_fcn_poly_degrees': '1/2 of test fcn poly degrees (list of ints [p_x, ..., p_t])',
       'test_fcn_support_tol': 'Tolerance for test fcn magnitude at boundary of support',
       'test_fcn_spectrum_decay': 'Spectral matching parameter (decay rate of spectrum)',
-      'changepoint_guess': 'For spectral matching changepoint [x,y,slope_1,slope_2]',
+      'changepoint_guess': 'For spectral matching changepoint [x, y, slope_1, slope_2]',
     }
 
     self.U = U
@@ -311,8 +314,15 @@ class WSINDy:
     support_grid_d = torch.linspace(-1, 1, 2*support_radius+1, dtype=torch.float64)
     multi_index_d = tuple(deriv_index_i[d] for deriv_index_i in self.derivatives)
 
+    # Calculate symbolic derivatives of test fcns
     x_sym = sp.Symbol('x')
     phi_bar = (1 - x_sym**2)**poly_degree
+    def D_phibar(x, D, x_sym, phi_bar):
+      D_phi = sp.diff(phi_bar, x_sym, D)
+      if abs(x) < 1.:
+        return float(D_phi.subs(x_sym, x))
+      else:
+        return 0.
     vec = np.vectorize(D_phibar)
 
     for i in range(len(self.derivatives)):
@@ -403,20 +413,32 @@ class WSINDy:
   #################################################################################################################
 
   def build_lhs(self):
+    """
+    Builds the left-hand side (LHS) of the WSINDy linear system.
+    Returns a 1D tensor "lhs" of shape: (number of query points,)
+    """
     kernel = self.test_fcn_kernels[0]
     if self.rescale:
       scales_product = np.prod(self.x_scales + [self.t_scale])
-      lhs = compute_weak_poly(self.U, kernel, self.spacing, \
+      lhs = self.compute_weak_poly(self.U, kernel, self.spacing, \
         u_scale=self.u_scale, scales_product=scales_product, volume_element=self.volume_element)
     else:
-      lhs = compute_weak_poly(self.U, kernel, self.spacing, volume_element=self.volume_element)
+      lhs = self.compute_weak_poly(self.U, kernel, self.spacing, volume_element=self.volume_element)
     b = lhs[self.conv_mask]
     self.lhs_name = self.format_lhs_name()
     self.lhs = b
     return
 
-  # Computes default monomial library terms
+  
   def create_default_library(self):
+    """
+    Builds a default candidates library of polynomial terms.
+    Returns:
+    --> "G" = a list of 1D tensors (library columns) of shape: (number of query points,)
+    --> "powers" = a list of multi-indices (monomial indices) of shape: (number of monomials,)
+    --> "derivs" = a list of integers (derivative indices) of shape: (number of monomials,)
+    --> "rhs_names" = a list of strings (monomial names) of length: (number of monomials,)
+    """
     [G, powers, derivs, rhs_names] = [],[],[],[]
     state = [self.U] + self.aux_vars
     if self.rescale:
@@ -436,14 +458,17 @@ class WSINDy:
           assert (len(monomial_index_j)-1) == len(self.aux_vars), "Inconsistent number of powers!"
           derivs.append(i)
           powers.append(monomial_index_j)
-          term = compute_weak_multipoly(state, kernel, self.spacing, power=monomial_index_j, u_scale=u_scale, \
-            scales_product=scales_product, volume_element=self.volume_element)
+          term = self.compute_weak_multipoly(state, kernel, self.spacing, power=monomial_index_j, \
+            u_scale=u_scale, scales_product=scales_product, volume_element=self.volume_element)
           name = self.format_monomial(monomial_index_j) + self.derivative_names[i]
           G.append(term[self.conv_mask])
           rhs_names.append(name)
     return G, powers, derivs, rhs_names
 
   def set_library(self, G, powers, derivs, rhs_names):
+    """
+    Sets library-related attributes of a WSINDy object.
+    """
     G = torch.stack(G, dim=1)
     if G.shape[0] != len(self.mask[0]):
       raise ValueError("Library has inconsistent dimensions.")
@@ -452,13 +477,80 @@ class WSINDy:
     if self.rescale:
       self.mu = self.compute_scale_matrix(powers, derivs)
     return
+  
+  def compute_weak_poly(self, u, kernels, spacing, power=1., u_scale=1., scales_product=1., volume_element=1.):
+    """
+    Returns a weak polynomial term for a single state variable: D[test fcn] * (u^power).
+    """
+    weak_poly = torch.from_numpy(sep_convolve((u_scale*u)**power, kernels, volume_element=volume_element))
+    weak_poly *= scales_product * np.prod(spacing)
+    return weak_poly
+
+  def compute_weak_multipoly(self, u, kernels, spacing, power=[1.], u_scale=[1.], scales_product=1., volume_element=1.):
+    """
+    Returns a weak multivariable polynomial term: D[test fcn] * (u1^p1 * ... * un^pn).
+    """
+    assert type(u) == type(power) == type(u_scale) == list, "Must provide a list."
+    monomial = 1
+    for i,ui in enumerate(u):
+      monomial *= (u_scale[i]*ui)**power[i]
+    weak_poly = torch.from_numpy(sep_convolve(monomial, kernels, volume_element=volume_element))
+    weak_poly *= scales_product * np.prod(spacing)
+    return weak_poly
+
+  def compute_weak_trig(self, u, kernels, spacing, freq=1., phase=0., scales_product=1., volume_element=1.):
+    """
+    Returns a weak trigonometric term: D[test fcn] * cos(freq*u + phase)
+    """
+    trig = torch.cos(freq*u + phase)
+    weak_trig = torch.from_numpy(sep_convolve(trig, kernels, volume_element=volume_element))
+    weak_trig *= scales_product * np.prod(spacing)
+    return weak_trig
+
+  def composite_term(self, columns, coeffs, name, model, lib_info):
+    """
+    Combines multiple library columns into a single composite term.
+    """
+    [G, powers, derivs, rhs_names] = lib_info
+    if model.rescale:
+      mu = model.compute_scale_matrix(powers, derivs)
+    else:
+      mu = torch.ones(len(powers))
+
+    term = 0
+    for i,column in enumerate(sorted(columns, reverse=True)):
+      term += coeffs[i] * (1/mu[column]) * G[column]
+      G.pop(column)
+      powers.pop(column)
+      derivs.pop(column)
+      rhs_names.pop(column)
+
+    G.append(term)
+    powers.append(None)
+    derivs.append(None)
+    rhs_names.append(name)
+    return G, powers, derivs, rhs_names
 
   #################################################################################################################
   # SPARSE REGRESSION
   #################################################################################################################
 
-  # Full MSTLS optimization routine, scans through Lambdas
+  def MSTLS_loss(self, w_n, w_LS, G):
+    """
+    Evaluates the MSTLS loss fcn for a given candidate threshold.
+    """
+    LS_num = la.norm(G @ (w_n - w_LS)).item()
+    LS_denom = la.norm(G @ w_LS).item()
+    LS_term = LS_num / LS_denom
+    zero_norm = sum(w_n != 0).item()/w_n.shape[0]
+    loss_n = LS_term + zero_norm
+    return loss_n
+
   def MSTLS(self, Lambda=None, Lambdas=10**((4/49)*torch.arange(0,50)-4)):
+    """
+    Full MSTLS optimization routine, scans through Lambdas.
+    [See Section 4.2 of Messenger, Bortz (JCP, 2021) for details.]
+    """
     w_LS = la.lstsq(self.library, self.lhs, driver='gelsd').solution
 
     if Lambda is not None:
@@ -481,8 +573,11 @@ class WSINDy:
     self.coeffs = w_star
     return w_star
 
-  # Sequential thresholding least squares routine
   def MSTLS_iterate(self, Lambda_n, w_LS):
+    """
+    The modified sequential thresholding least squares routine (single threshold iteration).
+    [See Section 4.2 of Messenger, Bortz (JCP, 2021) for details.]
+    """
     G = self.library
     b = self.lhs
     max_its = G.shape[1]
@@ -505,13 +600,38 @@ class WSINDy:
       nonzero_inds = ib_inds
       iteration += 1
 
-    loss_n = loss(w_n, w_LS, G)
+    loss_n = self.MSTLS_loss(w_n, w_LS, G)
     return w_n, loss_n
   
   #################################################################################################################
   # FORMATTING SYMBOLIC STRINGS AND PRINTING RESULTS
   #################################################################################################################
-  
+
+  def symbolic_eqn(self, lhs_name, rhs_names, w):
+    """
+    Returns the symbolic ODE or PDE string
+    """
+    nonzero_inds = w.nonzero().flatten()
+    nonzero_coeffs = w[nonzero_inds].tolist()
+    nonzero_terms = [rhs_names[i] for i in nonzero_inds]
+
+    pde = []
+    for coeff, term in zip(nonzero_coeffs, nonzero_terms):
+      if coeff >= 0.:
+        pde.append(f"+ {coeff:.2f}{term}")
+      else:
+        pde.append(f"- {abs(coeff):.2f}{term}")
+    pde = lhs_name + " = " + " ".join(pde)
+    return pde
+
+  def print_library_string(self, rhs_names):
+    """
+    Displays the library of candidate terms (rendered in LaTeX).
+    """
+    lib_string = fr'\Theta({",".join(self.var_names)})=' + r'[' + r', \, '.join(rhs_names) + r']'
+    display(Math(lib_string))
+    return
+
   def get_derivative_names(self):
     """
     Returns a list of all symbolic derivative names used in the library.
@@ -580,7 +700,7 @@ class WSINDy:
 
     print('RESULTS')
     eq_label = self.equation_type.upper()
-    eqn = symbolic_eqn(self.lhs_name, self.rhs_names, self.coeffs)
+    eqn = self.symbolic_eqn(self.lhs_name, self.rhs_names, self.coeffs)
     num_terms = self.coeffs.count_nonzero().item()
     if self.rescale:
       [r, R2] = compute_residuals(self.library, self.coeffs/self.mu, self.lhs)
@@ -703,7 +823,7 @@ class WSINDy:
           results['test_fcn_poly_degrees'].append(str(model.test_fcn_poly_degrees))
           results['Lambda'].append(Lambda)
           results['rescale'].append(rescale)
-          results['model'].append(symbolic_eqn(lhs_name, rhs_names, w))
+          results['model'].append(self.symbolic_eqn(lhs_name, rhs_names, w))
           results['terms'].append([rhs_names[j] for j in nonzero])
           results['coeffs'].append([w[j].item() for j in nonzero])
           results['sparsity'].append(len(nonzero))

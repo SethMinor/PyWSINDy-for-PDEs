@@ -17,7 +17,9 @@
 
 - aesthetic updates to plots produced from "verbosity=True"
 
----------------------------------------------------------------------------------
+- ported some existing "helper_fcn" functions into the main "WSINDy" class as methods
+
+----------------------------------------------------------------------------------------
 STILL IN DEVELOPMENT
 
 - added unit tests for verifying future code development
@@ -25,6 +27,6 @@ STILL IN DEVELOPMENT
 
 - added benchmarking with the "dysts" dataset
 
-- added ability for MSTLS select the zero model
+- added ability for Bayesian MSTLS select the zero model
 
 - update readme with improved documentation and pics

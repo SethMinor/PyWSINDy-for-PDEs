@@ -1,10 +1,8 @@
-- add "print_library_string" class method (?)
-
-- add unit testing
+- add unit/integration testing
 
 - add dysts benchmarking
 
-- add bayesian MSTLS method for selecting zero model
+- add bayesian MSTLS method for selecting zero model (?)
 
 - update readme with improved documentation and pics
 -- also add "open in colab" banner for github (?)
